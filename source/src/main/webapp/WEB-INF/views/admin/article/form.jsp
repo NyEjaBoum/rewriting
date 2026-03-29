@@ -43,27 +43,36 @@
                     </div>
                     <div class="input-group">
                         <label for="meta-desc">Méta Description (SEO)</label>
-                        <textarea id="meta-desc" name="meta_description" rows="2" maxlength="160" placeholder="Résumé pour les moteurs de recherche...">${article.meta_description}</textarea>
+                        <textarea id="meta-desc" name="meta_description" rows="4" maxlength="160" placeholder="Résumé pour les moteurs de recherche..." style="min-height:70px; font-size:16px; padding:16px; border-radius:8px; border:1px solid #eee; background:#fff;">${article.meta_description}</textarea>
                     </div>
                 </div>
                 <div class="toolbar">
-                    <button type="button" onclick="execCmd('bold')"><strong>B</strong></button>
-                    <button type="button" onclick="execCmd('italic')"><em>I</em></button>
+                    <button type="button" id="btn-bold" onclick="execCmd('bold')"><strong>B</strong></button>
+                    <button type="button" id="btn-italic" onclick="execCmd('italic')"><em>I</em></button>
                     <div class="divider"></div>
-                    <button type="button" onclick="execCmd('formatBlock', 'h2')">H2</button>
-                    <button type="button" onclick="execCmd('formatBlock', 'h3')">H3</button>
+                    <button type="button" id="btn-h2" onclick="execCmd('formatBlock', 'h2')">H2</button>
+                    <button type="button" id="btn-h3" onclick="execCmd('formatBlock', 'h3')">H3</button>
                     <div class="divider"></div>
-                    <button type="button" onclick="execCmd('insertUnorderedList')">• Liste</button>
+                    <button type="button" id="btn-ul" onclick="execCmd('insertUnorderedList')">• Liste</button>
                 </div>
-                <div id="editor" contenteditable="true" placeholder="Commencez à écrire votre analyse sur le conflit...">${article.contenu_html}</div>
+                <div id="rich-editor" contenteditable="true" placeholder="Commencez à écrire votre analyse sur le conflit...">${article.contenu_html}</div>
+                <div id="rich-editor" contenteditable="true" placeholder="Commencez à écrire votre analyse sur le conflit..."></div>
                 <input type="hidden" name="contenu_html" id="contenu_html">
             </form>
         </section>
     </main>
 </div>
+<style>
+    .toolbar button.active {
+        background: #000;
+        color: #fff;
+        font-weight: 700;
+    }
+</style>
 <script>
     function execCmd(command, value = null) {
         document.execCommand(command, false, value);
+        setTimeout(updateToolbarState, 0);
     }
     function updateSlug() {
         var titre = document.getElementById('titre').value;
@@ -73,7 +82,25 @@
     function beforeSubmit() {
         document.getElementById('contenu_html').value = document.getElementById('editor').innerHTML;
     }
-    window.onload = function() { updateSlug(); }
+    // Met à jour l'état visuel des boutons selon la sélection
+    function updateToolbarState() {
+        document.getElementById('btn-bold').classList.toggle('active', document.queryCommandState('bold'));
+        document.getElementById('btn-italic').classList.toggle('active', document.queryCommandState('italic'));
+        // Pour H2/H3, on regarde le formatBlock
+        let sel = window.getSelection();
+        let node = sel.anchorNode;
+        while (node && node.nodeType !== 1) node = node.parentNode;
+        let tag = node ? node.tagName : '';
+        document.getElementById('btn-h2').classList.toggle('active', tag === 'H2');
+        document.getElementById('btn-h3').classList.toggle('active', tag === 'H3');
+        document.getElementById('btn-ul').classList.toggle('active', document.queryCommandState('insertUnorderedList'));
+    }
+    document.addEventListener('selectionchange', function() {
+        if (document.activeElement === document.getElementById('editor')) {
+            updateToolbarState();
+        }
+    });
+    window.onload = function() { updateSlug(); updateToolbarState(); };
 </script>
 </body>
 </html>

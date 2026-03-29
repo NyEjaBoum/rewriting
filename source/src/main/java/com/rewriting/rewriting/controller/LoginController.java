@@ -31,7 +31,7 @@ public class LoginController {
         if (utilisateur != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", utilisateur);
-            return "redirect:/admin";
+            return "redirect:/admin/articles/add";
         } else {
             model.addAttribute("error", "Identifiants invalides");
             return "login";
