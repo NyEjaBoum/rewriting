@@ -7,18 +7,11 @@
     <title><c:out value="${formTitle != null ? formTitle : 'Article'}"/></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/editor-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/lvkaijv4dia4mvlq3yvfhmy2p7ng3xrugyqclql1apwcyqod/tinymce/6/tinymce.min.js"></script>
 </head>
 <body>
 <div class="admin-wrapper">
-    <aside class="admin-sidebar">
-        <div class="logo">VERTONEWS</div>
-        <nav>
-            <a href="#">Tableau de bord</a>
-            <a href="#" class="active">Nouvel Article</a>
-            <a href="#">Articles publiés</a>
-            <a href="#">Paramètres</a>
-        </nav>
-    </aside>
+    <jsp:include page="/WEB-INF/views/admin/navbar.jsp" />
     <main class="editor-main">
         <header class="editor-header">
             <h2><c:out value="${formTitle != null ? formTitle : 'Article'}"/></h2>
@@ -45,23 +38,17 @@
                     </div>
                     <div class="input-group">
                         <label for="meta-desc">Méta Description (SEO)</label>
-                        <textarea id="meta-desc" name="meta_description" rows="4" maxlength="160"
-                                  placeholder="Résumé pour les moteurs de recherche..."
-                                  style="min-height:70px; font-size:16px; padding:16px; border-radius:8px; border:1px solid #eee; background:#fff;"><c:out value='${article.meta_description}'/></textarea>
+                        <textarea id="meta-desc" name="meta_description" rows="4" maxlength="160" placeholder="Résumé pour les moteurs de recherche..." style="min-height:70px; font-size:16px; padding:16px; border-radius:8px; border:1px solid #eee; background:#fff;">${article.metaDescription}</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="date_pub">Date de publication</label>
+                        <input type="date" id="date_pub" name="date_pub" value="${article.datePub}">
                     </div>
                 </div>
-                <div class="toolbar">
-                    <button type="button" id="btn-bold"   onclick="execCmd('bold')"><strong>B</strong></button>
-                    <button type="button" id="btn-italic" onclick="execCmd('italic')"><em>I</em></button>
-                    <div class="divider"></div>
-                    <button type="button" id="btn-h2"     onclick="execCmd('formatBlock', 'h2')">H2</button>
-                    <button type="button" id="btn-h3"     onclick="execCmd('formatBlock', 'h3')">H3</button>
-                    <div class="divider"></div>
-                    <button type="button" id="btn-ul"     onclick="execCmd('insertUnorderedList')">• Liste</button>
+                <div style="margin-bottom: 20px;">
+                    <label for="rich-editor" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555;">Contenu de l'article</label>
+                    <textarea id="rich-editor" name="contenu_html">${article.contenuHtml}</textarea>
                 </div>
-                <div id="rich-editor" contenteditable="true"
-                     placeholder="Commencez à écrire votre analyse..."></div>
-                <input type="hidden" name="contenu_html" id="contenu_html">
             </form>
         </section>
 
@@ -76,46 +63,7 @@
     </main>
 </div>
 
-<style>
-    .toolbar button.active { background:#000; color:#fff; font-weight:700; }
-    #preview-overlay {
-        position:fixed; inset:0; background:rgba(0,0,0,.5);
-        display:flex; align-items:center; justify-content:center; z-index:1000;
-    }
-    #preview-box {
-        background:#fff; border-radius:16px; padding:40px;
-        max-width:720px; width:90%; max-height:80vh; overflow-y:auto;
-    }
-    #preview-close {
-        float:right; border:none; background:#eee; border-radius:8px;
-        padding:6px 14px; cursor:pointer; font-size:13px; margin-bottom:16px;
-    }
-</style>
-
 <script>
-    // ── Données de pré-remplissage injectées côté serveur ──────────────────
-    var contenuExistant = "<c:out value='${article.contenu_html}' escapeXml='false'/>";
-
-    // ── Initialisation ─────────────────────────────────────────────────────
-    window.onload = function () {
-        // Pré-remplir l'éditeur en mode édition
-        if (contenuExistant.trim() !== '') {
-            document.getElementById('rich-editor').innerHTML = contenuExistant;
-        }
-        // Générer le slug uniquement si aucun slug n'existe encore
-        if (document.getElementById('slug').value === '') {
-            updateSlug();
-        }
-        updateToolbarState();
-    };
-
-    // ── Commandes de formatage ─────────────────────────────────────────────
-    function execCmd(command, value) {
-        document.execCommand(command, false, value || null);
-        setTimeout(updateToolbarState, 0);
-    }
-
-    // ── Slug ───────────────────────────────────────────────────────────────
     function updateSlug() {
         var titre = document.getElementById('titre').value;
         var slug = titre.toLowerCase()
@@ -125,55 +73,43 @@
         document.getElementById('slug').value = slug;
     }
 
-    // ── Avant soumission ───────────────────────────────────────────────────
     function beforeSubmit() {
-        var titre   = document.getElementById('titre').value.trim();
-        var contenu = document.getElementById('rich-editor').innerHTML.trim();
+        var editor = tinymce.get('rich-editor');
+        var contenuHtml = editor.getContent();
+        var titre = document.getElementById('titre').value;
 
-        if (titre === '') {
-            alert('Le titre est obligatoire.');
-            return false;
+        if (!/^<h1>/i.test(contenuHtml)) {
+            contenuHtml = '<h1>' + titre + '</h1>' + contenuHtml;
+            editor.setContent(contenuHtml);
         }
-        if (contenu === '' || contenu === '<br>') {
-            alert('Le contenu est obligatoire.');
-            return false;
-        }
-
-        document.getElementById('contenu_html').value = contenu;
-        return true;
+        editor.save();
     }
 
-    // ── Aperçu ─────────────────────────────────────────────────────────────
-    function showPreview() {
-        document.getElementById('preview-titre').textContent =
-            document.getElementById('titre').value || '(sans titre)';
-        document.getElementById('preview-content').innerHTML =
-            document.getElementById('rich-editor').innerHTML;
-        document.getElementById('preview-overlay').style.display = 'flex';
-    }
-
-    function closePreview() {
-        document.getElementById('preview-overlay').style.display = 'none';
-    }
-
-    // ── État visuel de la toolbar ──────────────────────────────────────────
-    function updateToolbarState() {
-        document.getElementById('btn-bold').classList.toggle('active',   document.queryCommandState('bold'));
-        document.getElementById('btn-italic').classList.toggle('active', document.queryCommandState('italic'));
-        var sel  = window.getSelection();
-        var node = sel.anchorNode;
-        while (node && node.nodeType !== 1) node = node.parentNode;
-        var tag  = node ? node.tagName : '';
-        document.getElementById('btn-h2').classList.toggle('active', tag === 'H2');
-        document.getElementById('btn-h3').classList.toggle('active', tag === 'H3');
-        document.getElementById('btn-ul').classList.toggle('active', document.queryCommandState('insertUnorderedList'));
-    }
-
-    document.addEventListener('selectionchange', function () {
-        if (document.activeElement === document.getElementById('rich-editor')) {
-            updateToolbarState();
+    // Initialiser TinyMCE
+    tinymce.init({
+        selector: '#rich-editor',
+        height: 400,
+        menubar: false,
+        toolbar: 'bold italic underline | h2 h3 | bullist numlist | link | undo redo',
+        plugins: 'link lists',
+        forced_root_blocks: 'p',
+        valid_elements: 'h1,h2,h3,p,strong,em,u,ul,ol,li,br,a[href],span[style]',
+        content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; line-height: 1.7; }',
+        branding: false,
+        setup: function(editor) {
+            editor.on('init', function() {
+                var content = editor.getContent();
+                var titre = document.getElementById('titre').value;
+                if (!/^<h1>/i.test(content) && titre) {
+                    editor.setContent('<h1>' + titre + '</h1>' + content);
+                }
+            });
         }
     });
+
+    window.onload = function() {
+        updateSlug();
+    };
 </script>
 </body>
 </html>
