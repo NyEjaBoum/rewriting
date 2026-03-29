@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur d'Article | Administration</title>
+    <link rel="stylesheet" href="editor-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="logo">VERTONEWS</div>
+            <nav>
+                <a href="#">Tableau de bord</a>
+                <a href="#" class="active">Nouvel Article</a>
+                <a href="#">Articles publiés</a>
+                <a href="#">Paramètres</a>
+            </nav>
+        </aside>
+
+        <main class="editor-main">
+            <header class="editor-header">
+                <h2>Créer un nouvel article</h2>
+                <div class="header-actions">
+                    <button class="btn-secondary">Enregistrer brouillon</button>
+                    <button class="btn-primary">Publier l'article</button>
+                </div>
+            </header>
+
+            <section class="editor-form">
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="post-title">Titre de l'article (H1)</label>
+                        <input type="text" id="post-title" placeholder="Entrez le titre ici..." oninput="generateSlug()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="post-slug">URL normalisée (Slug / Rewriting)</label>
+                        <input type="text" id="post-slug" placeholder="url-de-l-article" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="meta-desc">Méta Description (SEO)</label>
+                        <textarea id="meta-desc" rows="2" placeholder="Résumé pour les moteurs de recherche..."></textarea>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <button type="button" onclick="formatDoc('bold')" title="Gras"><strong>B</strong></button>
+                    <button type="button" onclick="formatDoc('italic')" title="Italique"><em>I</em></button>
+                    <div class="divider"></div>
+                    <button type="button" onclick="formatDoc('formatBlock', 'h2')">H2</button>
+                    <button type="button" onclick="formatDoc('formatBlock', 'h3')">H3</button>
+                    <div class="divider"></div>
+                    <button type="button" onclick="formatDoc('insertUnorderedList')">• Liste</button>
+                </div>
+
+                <div id="rich-editor" contenteditable="true" placeholder="Commencez à écrire votre analyse sur le conflit..."></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Fonction de formatage demandée
+        function formatDoc(cmd, value = null) {
+            document.execCommand(cmd, false, value);
+        }
+
+        // Auto-génération du slug pour l'URL Rewriting
+        function generateSlug() {
+            const title = document.getElementById('post-title').value;
+            const slug = title.toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            document.getElementById('post-slug').value = slug;
+        }
+    </script>
+</body>
+</html>

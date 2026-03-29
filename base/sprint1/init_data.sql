@@ -14,3 +14,5 @@ VALUES (9555,
 INSERT INTO images (url_path, alt_text, article_id) 
 VALUES ('/img/carte-conflit.jpg', 'Carte des tensions de la guerre en Iran', 9555),
        ('/img/soldats.jpg', 'Positions militaires à la frontière iranienne', 9555);
+
+       
