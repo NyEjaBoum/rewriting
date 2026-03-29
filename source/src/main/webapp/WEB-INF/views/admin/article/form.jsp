@@ -7,18 +7,11 @@
     <title><c:out value="${formTitle != null ? formTitle : 'Article'}"/></title>
     <link rel="stylesheet" href="/css/editor-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/lvkaijv4dia4mvlq3yvfhmy2p7ng3xrugyqclql1apwcyqod/tinymce/6/tinymce.min.js"></script>
 </head>
 <body>
 <div class="admin-wrapper">
-    <aside class="admin-sidebar">
-        <div class="logo">VERTONEWS</div>
-        <nav>
-            <a href="#">Tableau de bord</a>
-            <a href="#" class="active">Nouvel Article</a>
-            <a href="#">Articles publiés</a>
-            <a href="#">Paramètres</a>
-        </nav>
-    </aside>
+    <jsp:include page="/WEB-INF/views/admin/navbar.jsp" />
     <main class="editor-main">
         <header class="editor-header">
             <h2><c:out value="${formTitle != null ? formTitle : 'Article'}"/></h2>
@@ -43,37 +36,66 @@
                     </div>
                     <div class="input-group">
                         <label for="meta-desc">Méta Description (SEO)</label>
-                        <textarea id="meta-desc" name="meta_description" rows="2" maxlength="160" placeholder="Résumé pour les moteurs de recherche...">${article.meta_description}</textarea>
+                        <textarea id="meta-desc" name="meta_description" rows="4" maxlength="160" placeholder="Résumé pour les moteurs de recherche..." style="min-height:70px; font-size:16px; padding:16px; border-radius:8px; border:1px solid #eee; background:#fff;">${article.metaDescription}</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="date_pub">Date de publication</label>
+                        <input type="date" id="date_pub" name="date_pub" value="${article.datePub}">
                     </div>
                 </div>
-                <div class="toolbar">
-                    <button type="button" onclick="execCmd('bold')"><strong>B</strong></button>
-                    <button type="button" onclick="execCmd('italic')"><em>I</em></button>
-                    <div class="divider"></div>
-                    <button type="button" onclick="execCmd('formatBlock', 'h2')">H2</button>
-                    <button type="button" onclick="execCmd('formatBlock', 'h3')">H3</button>
-                    <div class="divider"></div>
-                    <button type="button" onclick="execCmd('insertUnorderedList')">• Liste</button>
+                <div style="margin-bottom: 20px;">
+                    <label for="rich-editor" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555;">Contenu de l'article</label>
+                    <textarea id="rich-editor" name="contenu_html">${article.contenuHtml}</textarea>
                 </div>
-                <div id="editor" contenteditable="true" placeholder="Commencez à écrire votre analyse sur le conflit...">${article.contenu_html}</div>
-                <input type="hidden" name="contenu_html" id="contenu_html">
             </form>
         </section>
     </main>
 </div>
+
 <script>
-    function execCmd(command, value = null) {
-        document.execCommand(command, false, value);
-    }
     function updateSlug() {
         var titre = document.getElementById('titre').value;
         var slug = titre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         document.getElementById('slug').value = slug;
     }
+
     function beforeSubmit() {
-        document.getElementById('contenu_html').value = document.getElementById('editor').innerHTML;
+        var editor = tinymce.get('rich-editor');
+        var contenuHtml = editor.getContent();
+        var titre = document.getElementById('titre').value;
+
+        if (!/^<h1>/i.test(contenuHtml)) {
+            contenuHtml = '<h1>' + titre + '</h1>' + contenuHtml;
+            editor.setContent(contenuHtml);
+        }
+        editor.save();
     }
-    window.onload = function() { updateSlug(); }
+
+    // Initialiser TinyMCE
+    tinymce.init({
+        selector: '#rich-editor',
+        height: 400,
+        menubar: false,
+        toolbar: 'bold italic underline | h2 h3 | bullist numlist | link | undo redo',
+        plugins: 'link lists',
+        forced_root_blocks: 'p',
+        valid_elements: 'h1,h2,h3,p,strong,em,u,ul,ol,li,br,a[href],span[style]',
+        content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; line-height: 1.7; }',
+        branding: false,
+        setup: function(editor) {
+            editor.on('init', function() {
+                var content = editor.getContent();
+                var titre = document.getElementById('titre').value;
+                if (!/^<h1>/i.test(content) && titre) {
+                    editor.setContent('<h1>' + titre + '</h1>' + content);
+                }
+            });
+        }
+    });
+
+    window.onload = function() {
+        updateSlug();
+    };
 </script>
 </body>
 </html>
