@@ -28,4 +28,12 @@ public class UtilisateurService {
     public void deleteUtilisateur(Long id) {
         utilisateurRepository.deleteById(id);
     }
+
+    public Utilisateur verifierIdentifiants(String username, String password) {
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(username);
+        if (utilisateur != null && utilisateur.getPassword().equals(password)) {
+            return utilisateur;
+        }
+        return null;
+    }
 }
