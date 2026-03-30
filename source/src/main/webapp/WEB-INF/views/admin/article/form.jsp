@@ -50,10 +50,14 @@
                     <label for="rich-editor" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555;">Contenu de l'article</label>
                     <textarea id="rich-editor" name="contenu_html">${article.contenuHtml}</textarea>
                 </div>
-                <!-- Section Images -->
+            </form>
+
+            <%-- Section images : formulaire séparé (les forms imbriqués sont interdits en HTML) --%>
+            <c:if test="${not empty article.id}">
                 <section class="form-section" style="margin-bottom: 30px;">
                     <h3>Images</h3>
-                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id != null ? article.id : 'new'}/uploadImage" method="post" enctype="multipart/form-data" id="imageUploadForm" onsubmit="return validateImageForm()">
+                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/uploadImage"
+                          method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
                         <div class="input-group">
                             <label for="imageFile">Fichier image</label>
                             <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
@@ -64,26 +68,19 @@
                         </div>
                         <button type="submit" class="btn-primary">Ajouter une image</button>
                     </form>
-                    <script>
-                        function validateImageForm() {
-                            var alt = document.getElementById('altText').value.trim();
-                            if (!alt) {
-                                alert('Le champ Alt est obligatoire.');
-                                return false;
-                            }
-                            return true;
-                        }
-                    </script>
-                    <c:if test="${not empty article.images}">
+
+                    <c:if test="${not empty images}">
                         <div style="margin-top:20px;">
                             <h4>Images associées :</h4>
                             <ul style="list-style:none; padding:0;">
-                                <c:forEach var="img" items="${article.images}">
+                                <c:forEach var="img" items="${images}">
                                     <li style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
                                         <img src="${pageContext.request.contextPath}${img.urlPath}" alt="${img.altText}" style="max-height:60px; border:1px solid #ccc;">
                                         <span>${img.altText}</span>
-                                        <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/deleteImage/${img.id}" method="post" style="display:inline;">
-                                            <button type="submit" class="btn-secondary" onclick="return confirm('Supprimer cette image ?')">Supprimer</button>
+                                        <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/deleteImage/${img.id}"
+                                              method="post" style="display:inline;">
+                                            <button type="submit" class="btn-secondary"
+                                                    onclick="return confirm('Supprimer cette image ?')">Supprimer</button>
                                         </form>
                                     </li>
                                 </c:forEach>
@@ -91,7 +88,7 @@
                         </div>
                     </c:if>
                 </section>
-            </form>
+            </c:if>
         </section>
 
         <!-- Aperçu -->

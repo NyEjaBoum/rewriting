@@ -1,20 +1,21 @@
-# Stage 1: Build
-FROM eclipse-temurin:17-jdk AS build
+# Stage 1: Build + extraction du WAR
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY source/.mvn/ .mvn/
-COPY source/mvnw source/pom.xml ./
-RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw dependency:go-offline -B
+COPY source/pom.xml .
+RUN mvn dependency:go-offline -B
 
 COPY source/src/ src/
-RUN ./mvnw package -DskipTests -B
+RUN mvn package -DskipTests -B
+
+# Extraire le WAR ici où jar est disponible (JDK)
+RUN mkdir -p /app/webapp && cd /app/webapp && jar xf /app/target/rewriting.war
 
 # Stage 2: Run
-FROM eclipse-temurin:17-jre
-WORKDIR /app
+FROM tomcat:10.1-jre17
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-COPY --from=build /app/target/*.war app.war
+# Copier l'app déjà extraite → le volume uploads/ n'écrasera qu'un sous-dossier
+COPY --from=build /app/webapp /usr/local/tomcat/webapps/ROOT
 
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.war"]

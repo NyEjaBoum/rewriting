@@ -159,6 +159,7 @@ public class ArticleServlet extends HttpServlet {
             return;
         }
         request.setAttribute("article", article);
+        request.setAttribute("images", imageDAO.findByArticleId(id));
         request.setAttribute("formTitle", "Éditer l'article");
         request.setAttribute("actionUrl", request.getContextPath() + "/admin/articles/edit/" + id);
         request.getRequestDispatcher("/WEB-INF/views/admin/article/form.jsp").forward(request, response);
