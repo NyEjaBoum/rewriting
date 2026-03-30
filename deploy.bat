@@ -13,7 +13,7 @@ echo.
 REM Check if Tomcat directory is specified
 if "%1"=="" (
     REM Use default Tomcat path
-    set TOMCAT_PATH=C:\Program Files\Apache Software Foundation\Tomcat 10.1
+    set TOMCAT_PATH=C:\Program Files\Tomcat\apache-tomcat-11.0.13
 ) else (
     set TOMCAT_PATH=%1
 )

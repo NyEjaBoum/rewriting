@@ -49,21 +49,43 @@
             </div>
 
             <c:if test="${fn:length(images) > 1}">
+                <div class="article-gallery">
+                    <c:forEach var="img" items="${images}" begin="1">
+                        <c:set var="galImgSrc" value="${img.urlPath}"/>
+                        <figure class="gallery-item">
+                            <img src="${fn:startsWith(galImgSrc,'http') ? galImgSrc : pageContext.request.contextPath.concat(galImgSrc)}"
+                                 alt="<c:out value='${img.altText}'/>">
+                            <c:if test="${not empty img.altText}">
+                                <figcaption><c:out value="${img.altText}"/></figcaption>
+                            </c:if>
+                        </figure>
+                    </c:forEach>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty relatedArticles}">
                 <section class="related-articles">
                     <h2 class="section-title">À lire aussi</h2>
                     <div class="related-grid">
-                        <c:forEach var="image" items="${images}" begin="1">
-                            <div class="related-card">
+                        <c:forEach var="related" items="${relatedArticles}">
+                            <a href="${pageContext.request.contextPath}/article/${related.slug}" class="related-card">
                                 <div class="card-image">
-                                    <c:set var="relImgSrc" value="${image.urlPath}"/>
-                                    <img src="${fn:startsWith(relImgSrc,'http') ? relImgSrc : pageContext.request.contextPath.concat(relImgSrc)}"
-                                         alt="<c:out value='${image.altText}'/>">
+                                    <c:choose>
+                                        <c:when test="${not empty related.images}">
+                                            <c:set var="relImgSrc" value="${related.images[0].urlPath}"/>
+                                            <img src="${fn:startsWith(relImgSrc,'http') ? relImgSrc : pageContext.request.contextPath.concat(relImgSrc)}"
+                                                 alt="<c:out value='${related.images[0].altText}'/>">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="card-image-placeholder"></div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="card-content">
                                     <span class="card-category">Actualités</span>
-                                    <p><c:out value="${image.altText}"/></p>
+                                    <p><c:out value="${related.titre}"/></p>
                                 </div>
-                            </div>
+                            </a>
                         </c:forEach>
                     </div>
                 </section>

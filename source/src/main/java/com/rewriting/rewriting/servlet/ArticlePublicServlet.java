@@ -52,9 +52,15 @@ public class ArticlePublicServlet extends HttpServlet {
 
             List<Image> images = imageDAO.findByArticleId(article.getId());
 
+            // Charger les autres articles publiés (pour "À lire aussi")
+            List<Article> allPublished = articleDAO.findAllPublished();
+            allPublished.removeIf(a -> a.getId().equals(article.getId()));
+            List<Article> relatedArticles = allPublished.size() > 3 ? allPublished.subList(0, 3) : allPublished;
+
             // Passer l'article et les images associées à la JSP
             request.setAttribute("article", article);
             request.setAttribute("images", images);
+            request.setAttribute("relatedArticles", relatedArticles);
             request.getRequestDispatcher("/WEB-INF/views/front/article.jsp").forward(request, response);
 
         } catch (SQLException e) {
