@@ -32,3 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 src/main/resources/application.properties
+
+### Uploads ###
+source/src/main/webapp/uploads/*
+!source/src/main/webapp/uploads/.gitkeep

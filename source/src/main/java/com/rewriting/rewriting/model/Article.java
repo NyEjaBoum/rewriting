@@ -10,6 +10,9 @@ public class Article {
     private String metaDescription;
     private Date datePub;
 
+    // Relation avec les images
+    private java.util.List<com.rewriting.rewriting.model.Image> images;
+
     // Getters et Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -28,4 +31,7 @@ public class Article {
 
     public Date getDatePub() { return datePub; }
     public void setDatePub(Date datePub) { this.datePub = datePub; }
+
+    public java.util.List<com.rewriting.rewriting.model.Image> getImages() { return images; }
+    public void setImages(java.util.List<com.rewriting.rewriting.model.Image> images) { this.images = images; }
 }

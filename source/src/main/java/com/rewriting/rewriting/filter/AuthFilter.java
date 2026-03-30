@@ -24,8 +24,8 @@ public class AuthFilter implements Filter {
 
         // Exclure les fichiers statiques
         if (path.startsWith("/css/") || path.endsWith(".css") || path.startsWith("/js/") || path.endsWith(".js") ||
-            path.startsWith("/images/") || path.endsWith(".png") || path.endsWith(".jpg") ||
-            path.endsWith(".gif") || path.endsWith(".ico")) {
+            path.startsWith("/images/") || path.startsWith("/uploads/") || path.endsWith(".png") || path.endsWith(".jpg") ||
+            path.endsWith(".gif") || path.endsWith(".webp") || path.endsWith(".ico")) {
             chain.doFilter(request, response);
             return;
         }

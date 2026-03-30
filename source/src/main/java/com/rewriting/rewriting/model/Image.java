@@ -1,23 +1,10 @@
 package com.rewriting.rewriting.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "images")
 public class Image {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "url_path", nullable = false)
     private String urlPath;
-
-    @Column(name = "alt_text", nullable = false)
     private String altText;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
     private Article article;
 
     // Getters et Setters
