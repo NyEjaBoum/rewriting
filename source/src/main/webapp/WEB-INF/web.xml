@@ -23,4 +23,14 @@
         <location>/error.jsp</location>
     </error-page>
 
+    <!-- Filter pour le rewriting d'URL des articles -->
+    <filter>
+        <filter-name>ArticleUrlRewriteFilter</filter-name>
+        <filter-class>com.rewriting.rewriting.filter.ArticleUrlRewriteFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ArticleUrlRewriteFilter</filter-name>
+        <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+
 </web-app>

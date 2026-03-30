@@ -76,7 +76,7 @@
                                 <span class="category-badge">Actualités</span>
 
                                 <h2 class="article-card-title">
-                                    <a href="${pageContext.request.contextPath}/article/${article.slug}">
+                                    <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
                                         <c:out value="${article.titre}"/>
                                     </a>
                                 </h2>
