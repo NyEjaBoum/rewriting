@@ -48,96 +48,70 @@
     <main class="main-wrapper">
         <c:choose>
             <c:when test="${not empty articles}">
-                <div class="content-grid">
-
-                    <%-- Article principal (le premier) --%>
-                    <c:forEach var="mainArticle" items="${articles}" begin="0" end="0">
-                        <section class="main-article">
-                            <div class="hero-image">
-                                <c:choose>
-                                    <c:when test="${not empty mainArticle.images}">
-                                        <c:set var="imgSrc0" value="${mainArticle.images[0].urlPath}"/>
-                                        <img src="${fn:startsWith(imgSrc0,'http') ? imgSrc0 : pageContext.request.contextPath.concat(imgSrc0)}"
-                                             alt="<c:out value='${mainArticle.images[0].altText}'/>">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="hero-image-placeholder">
-                                            ${fn:substring(mainArticle.titre, 0, 1)}
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-
-                            <div class="article-meta">
-                                <img src="https://i.pravatar.cc/100?u=redaction" class="author-img" alt="Rédaction">
-                                <span class="meta-info">
-                                    <strong>Rédaction</strong> | Actualités &bull;
-                                    <fmt:formatDate value="${mainArticle.datePub}" pattern="dd/MM/yyyy"/>
-                                </span>
-                            </div>
-
-                            <h2 class="main-title">
-                                <a href="${pageContext.request.contextPath}/article/${mainArticle.slug}">
-                                    <c:out value="${mainArticle.titre}"/>
-                                </a>
-                            </h2>
-
-                            <p class="summary">
-                                <c:out value="${mainArticle.metaDescription}"/>
-                                <a href="${pageContext.request.contextPath}/article/${mainArticle.slug}" class="read-more">lire la suite</a>
-                            </p>
-                        </section>
-                    </c:forEach>
-
-                    <%-- Sidebar : articles 2 à 4 --%>
-                    <aside class="sidebar">
-                        <c:forEach var="article" items="${articles}" begin="1" end="3">
-                            <div class="side-item">
-                                <c:choose>
-                                    <c:when test="${not empty article.images}">
-                                        <c:set var="sideImgSrc" value="${article.images[0].urlPath}"/>
-                                        <img src="${fn:startsWith(sideImgSrc,'http') ? sideImgSrc : pageContext.request.contextPath.concat(sideImgSrc)}"
-                                             alt="<c:out value='${article.images[0].altText}'/>">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="side-item-placeholder"></div>
-                                    </c:otherwise>
-                                </c:choose>
-                                <div class="side-text">
-                                    <h3>
-                                        <a href="${pageContext.request.contextPath}/article/${article.slug}">
-                                            <c:out value="${article.titre}"/>
-                                        </a>
-                                    </h3>
-                                    <div class="meta">
-                                        Rédaction | <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy"/>
+                <%-- Grille d'articles --%>
+                <div class="articles-grid">
+                    <c:forEach var="article" items="${articles}">
+                        <article class="article-card">
+                            <%-- Image principale ou placeholder --%>
+                            <c:choose>
+                                <c:when test="${not empty article.images}">
+                                    <c:set var="imgSrc" value="${article.images[0].urlPath}"/>
+                                    <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
+                                         alt="<c:out value='${article.images[0].altText}'/>"
+                                         class="article-card-image">
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="article-card-placeholder">
+                                        ${fn:substring(article.titre, 0, 1)}
                                     </div>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <%-- Contenu de la carte --%>
+                            <div class="article-card-content">
+                                <span class="category-badge">Actualités</span>
+
+                                <h2 class="article-card-title">
+                                    <a href="${pageContext.request.contextPath}/article/${article.slug}">
+                                        <c:out value="${article.titre}"/>
+                                    </a>
+                                </h2>
+
+                                <p class="article-card-excerpt">
+                                    <c:out value="${excerpts[article.id]}"/>
+                                </p>
+
+                                <div class="article-meta">
+                                    <img src="https://i.pravatar.cc/100?u=redaction" class="author-img" alt="Rédaction">
+                                    <span class="meta-info">
+                                        <strong>Rédaction</strong> &bull;
+                                        <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy"/>
+                                    </span>
                                 </div>
                             </div>
+                        </article>
+                    </c:forEach>
+                </div>
+
+                <%-- Pagination --%>
+                <c:if test="${totalPages > 1}">
+                    <nav class="pagination">
+                        <c:if test="${currentPage > 1}">
+                            <a href="?page=${currentPage - 1}" class="page-btn">← Précédent</a>
+                        </c:if>
+
+                        <c:forEach begin="1" end="${totalPages}" var="p">
+                            <a href="?page=${p}"
+                               class="page-num ${p == currentPage ? 'active' : ''}">
+                                ${p}
+                            </a>
                         </c:forEach>
 
-                        <div class="trending">
-                            <h4>Auteurs populaires</h4>
-                            <div class="author-row">
-                                <img src="https://i.pravatar.cc/100?u=adam" class="author-img" alt="Adam Strong">
-                                <div class="author-info">
-                                    <strong>Adam Strong</strong>
-                                    <span>14.3K followers</span>
-                                </div>
-                                <span class="arrow">&#8599;</span>
-                            </div>
-                            <div class="author-row">
-                                <img src="https://i.pravatar.cc/100?u=sam" class="author-img" alt="Samantha Hayes">
-                                <div class="author-info">
-                                    <strong>Samantha Hayes</strong>
-                                    <span>18.7K followers</span>
-                                </div>
-                                <span class="arrow">&#8599;</span>
-                            </div>
-                        </div>
-                    </aside>
-
-                </div>
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="?page=${currentPage + 1}" class="page-btn">Suivant →</a>
+                        </c:if>
+                    </nav>
+                </c:if>
             </c:when>
             <c:otherwise>
                 <div class="no-articles">
