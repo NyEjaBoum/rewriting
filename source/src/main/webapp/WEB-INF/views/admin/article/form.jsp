@@ -45,6 +45,13 @@
                         <label for="date_pub">Date de publication</label>
                         <input type="date" id="date_pub" name="date_pub" <c:if test="${not empty article.datePub}">value="<fmt:formatDate value="${article.datePub}" pattern="yyyy-MM-dd"/>"</c:if>>
                     </div>
+                    <div class="input-group">
+                        <label for="statut">Statut de l'article</label>
+                        <select id="statut" name="statut" style="min-height:45px; font-size:16px; padding:10px 16px; border-radius:8px; border:1px solid #eee; background:#fff;">
+                            <option value="BROUILLON" <c:if test="${article.statut == 'BROUILLON' || empty article.statut}">selected</c:if>>Brouillon</option>
+                            <option value="PUBLIE" <c:if test="${article.statut == 'PUBLIE'}">selected</c:if>>Publié</option>
+                        </select>
+                    </div>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <label for="rich-editor" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555;">Contenu de l'article</label>

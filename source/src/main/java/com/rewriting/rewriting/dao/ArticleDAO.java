@@ -23,6 +23,30 @@ public class ArticleDAO {
                 article.setContenuHtml(rs.getString("contenu_html"));
                 article.setMetaDescription(rs.getString("meta_description"));
                 article.setDatePub(rs.getDate("date_pub"));
+                article.setStatut(rs.getString("statut"));
+                articles.add(article);
+            }
+        }
+        return articles;
+    }
+
+    public List<Article> findAllPublished() throws SQLException {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT * FROM articles WHERE statut = 'PUBLIE' ORDER BY date_pub DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Article article = new Article();
+                article.setId(rs.getLong("id"));
+                article.setTitre(rs.getString("titre"));
+                article.setSlug(rs.getString("slug"));
+                article.setContenuHtml(rs.getString("contenu_html"));
+                article.setMetaDescription(rs.getString("meta_description"));
+                article.setDatePub(rs.getDate("date_pub"));
+                article.setStatut(rs.getString("statut"));
                 articles.add(article);
             }
         }
@@ -45,6 +69,7 @@ public class ArticleDAO {
                     article.setContenuHtml(rs.getString("contenu_html"));
                     article.setMetaDescription(rs.getString("meta_description"));
                     article.setDatePub(rs.getDate("date_pub"));
+                    article.setStatut(rs.getString("statut"));
 
                     // Charger les images associées
                     ImageDAO imageDAO = new ImageDAO();
@@ -74,6 +99,13 @@ public class ArticleDAO {
                     article.setContenuHtml(rs.getString("contenu_html"));
                     article.setMetaDescription(rs.getString("meta_description"));
                     article.setDatePub(rs.getDate("date_pub"));
+                    article.setStatut(rs.getString("statut"));
+
+                    // Charger les images associées
+                    ImageDAO imageDAO = new ImageDAO();
+                    java.util.List<com.rewriting.rewriting.model.Image> images = imageDAO.findByArticleId(article.getId());
+                    article.setImages(images);
+
                     return article;
                 }
             }
@@ -94,7 +126,7 @@ public class ArticleDAO {
     }
 
     private Article insert(Article article) throws SQLException {
-        String query = "INSERT INTO articles (titre, slug, contenu_html, meta_description, date_pub) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO articles (titre, slug, contenu_html, meta_description, date_pub, statut) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -104,6 +136,7 @@ public class ArticleDAO {
             pstmt.setString(3, article.getContenuHtml());
             pstmt.setString(4, article.getMetaDescription());
             pstmt.setDate(5, new java.sql.Date(article.getDatePub().getTime()));
+            pstmt.setString(6, article.getStatut() != null ? article.getStatut() : "BROUILLON");
 
             pstmt.executeUpdate();
 
@@ -117,7 +150,7 @@ public class ArticleDAO {
     }
 
     private Article update(Article article) throws SQLException {
-        String query = "UPDATE articles SET titre = ?, slug = ?, contenu_html = ?, meta_description = ? WHERE id = ?";
+        String query = "UPDATE articles SET titre = ?, slug = ?, contenu_html = ?, meta_description = ?, statut = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -126,7 +159,8 @@ public class ArticleDAO {
             pstmt.setString(2, article.getSlug());
             pstmt.setString(3, article.getContenuHtml());
             pstmt.setString(4, article.getMetaDescription());
-            pstmt.setLong(5, article.getId());
+            pstmt.setString(5, article.getStatut() != null ? article.getStatut() : "BROUILLON");
+            pstmt.setLong(6, article.getId());
 
             pstmt.executeUpdate();
         }

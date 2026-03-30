@@ -9,6 +9,7 @@ public class Article {
     private String contenuHtml;
     private String metaDescription;
     private Date datePub;
+    private String statut; // BROUILLON ou PUBLIE
 
     // Relation avec les images
     private java.util.List<com.rewriting.rewriting.model.Image> images;
@@ -31,6 +32,9 @@ public class Article {
 
     public Date getDatePub() { return datePub; }
     public void setDatePub(Date datePub) { this.datePub = datePub; }
+
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
 
     public java.util.List<com.rewriting.rewriting.model.Image> getImages() { return images; }
     public void setImages(java.util.List<com.rewriting.rewriting.model.Image> images) { this.images = images; }
