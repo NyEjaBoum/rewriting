@@ -8,6 +8,7 @@ import com.rewriting.rewriting.dao.ArticleDAO;
 import com.rewriting.rewriting.dao.ImageDAO;
 import com.rewriting.rewriting.model.Article;
 import com.rewriting.rewriting.model.Image;
+import com.rewriting.rewriting.util.TextUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -51,6 +52,11 @@ public class ArticlePublicServlet extends HttpServlet {
             }
 
             List<Image> images = imageDAO.findByArticleId(article.getId());
+
+            // Fallback meta description si vide
+            if (article.getMetaDescription() == null || article.getMetaDescription().isBlank()) {
+                request.setAttribute("metaFallback", TextUtils.getExcerpt(article.getContenuHtml(), 150));
+            }
 
             // Charger les autres articles publiés (pour "À lire aussi")
             List<Article> allPublished = articleDAO.findAllPublished();

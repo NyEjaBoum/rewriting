@@ -8,7 +8,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><c:out value="${article.titre}"/> | Iran Pulse</title>
-    <meta name="description" content="<c:out value='${article.metaDescription}'/>">
+    <meta name="description" content="<c:out value='${not empty article.metaDescription ? article.metaDescription : metaFallback}'/>">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="<c:out value='${article.titre}'/>">
+    <meta property="og:description" content="<c:out value='${not empty article.metaDescription ? article.metaDescription : metaFallback}'/>">
+    <c:if test="${not empty images}">
+        <c:set var="ogImg" value="${images[0].urlPath}"/>
+        <meta property="og:image" content="${fn:startsWith(ogImg,'http') ? ogImg : pageContext.request.contextPath.concat(ogImg)}">
+    </c:if>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -37,7 +44,7 @@
                 <figure class="main-figure">
                     <c:set var="mainImgSrc" value="${images[0].urlPath}"/>
                     <img src="${fn:startsWith(mainImgSrc,'http') ? mainImgSrc : pageContext.request.contextPath.concat(mainImgSrc)}"
-                         alt="<c:out value='${images[0].altText}'/>">
+                         alt="<c:out value='${images[0].altText}'/>" loading="lazy">
                     <c:if test="${not empty images[0].altText}">
                         <figcaption><c:out value="${images[0].altText}"/></figcaption>
                     </c:if>
@@ -54,7 +61,7 @@
                         <c:set var="galImgSrc" value="${img.urlPath}"/>
                         <figure class="gallery-item">
                             <img src="${fn:startsWith(galImgSrc,'http') ? galImgSrc : pageContext.request.contextPath.concat(galImgSrc)}"
-                                 alt="<c:out value='${img.altText}'/>">
+                                 alt="<c:out value='${img.altText}'/>" loading="lazy">
                             <c:if test="${not empty img.altText}">
                                 <figcaption><c:out value="${img.altText}"/></figcaption>
                             </c:if>
@@ -74,7 +81,7 @@
                                         <c:when test="${not empty related.images}">
                                             <c:set var="relImgSrc" value="${related.images[0].urlPath}"/>
                                             <img src="${fn:startsWith(relImgSrc,'http') ? relImgSrc : pageContext.request.contextPath.concat(relImgSrc)}"
-                                                 alt="<c:out value='${related.images[0].altText}'/>">
+                                                 alt="<c:out value='${related.images[0].altText}'/>" loading="lazy">
                                         </c:when>
                                         <c:otherwise>
                                             <div class="card-image-placeholder"></div>

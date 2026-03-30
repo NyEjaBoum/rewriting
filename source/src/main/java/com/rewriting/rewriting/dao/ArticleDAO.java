@@ -2,6 +2,7 @@ package com.rewriting.rewriting.dao;
 
 import com.rewriting.rewriting.model.Article;
 import com.rewriting.rewriting.db.DatabaseConnection;
+import com.rewriting.rewriting.util.SlugUtils;
 import java.sql.*;
 import java.util.*;
 
@@ -160,6 +161,14 @@ public class ArticleDAO {
 
     public boolean existsBySlug(String slug) throws SQLException {
         return findBySlug(slug) != null;
+    }
+
+    public String generateUniqueSlug(String titre) throws SQLException {
+        String base = SlugUtils.generate(titre);
+        if (!existsBySlug(base)) return base;
+        int i = 1;
+        while (existsBySlug(base + "-" + i)) i++;
+        return base + "-" + i;
     }
 
     public Article save(Article article) throws SQLException {
