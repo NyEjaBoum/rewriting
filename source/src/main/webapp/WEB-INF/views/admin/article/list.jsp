@@ -15,7 +15,7 @@
     
     <main class="editor-main">
         <header class="editor-header">
-            <h2>Articles publiés</h2>
+            <h2>Tous les articles</h2>
             <div class="header-actions">
                 <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">+ Nouvel Article</a>
             </div>
@@ -44,6 +44,7 @@
                                 <th>Titre</th>
                                 <th>Slug</th>
                                 <th>Date de pub</th>
+                                <th>Statut</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -55,6 +56,9 @@
                                     <td><code>${article.slug}</code></td>
                                     <td>
                                         <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy" />
+                                    </td>
+                                    <td>
+                                        <span class="statut-badge statut-${article.statut}">${article.statut}</span>
                                     </td>
                                     <td>
                                         <a href="${pageContext.request.contextPath}/admin/articles/edit/${article.id}" class="btn-edit">Éditer</a>

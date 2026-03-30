@@ -1,7 +1,7 @@
 <%-- navbar.jsp - Barre de navigation réutilisable --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <aside class="admin-sidebar">
-    <div class="logo">VERTONEWS</div>
+    <div class="logo">IRAN PULSE</div>
     <nav>
         <a href="${pageContext.request.contextPath}/admin">Tableau de bord</a>
         <a href="${pageContext.request.contextPath}/admin/articles" class="<%= request.getRequestURI().contains("/articles") ? "active" : "" %>">Articles</a>
