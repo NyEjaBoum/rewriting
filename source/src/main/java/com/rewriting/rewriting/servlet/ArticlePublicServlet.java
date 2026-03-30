@@ -24,27 +24,43 @@ public class ArticlePublicServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String pathInfo = request.getPathInfo(); // Ex: /mon-article
+        // Vérifie si on a les attributs du filtre (rewriting)
+        String slug = (String) request.getAttribute("slug");
+        String id = (String) request.getAttribute("id");
+        String date = (String) request.getAttribute("date");
 
-        if (pathInfo == null || pathInfo.equals("/")) {
-            request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
-            return;
-        }
-
-        // Extraire le slug (sans le premier "/")
-        String slug = pathInfo.substring(1);
-        if (slug.endsWith("/")) {
-            slug = slug.substring(0, slug.length() - 1);
-        }
-
-        if (slug.isBlank() || slug.contains("/")) {
-            request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
-            return;
+        Article article = null;
+        if (slug != null && id != null && date != null) {
+            // On a les infos du rewriting, on peut utiliser l'id pour charger l'article
+            try {
+                article = articleDAO.findById(Long.parseLong(id));
+            } catch (NumberFormatException | SQLException e) {
+                request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
+                return;
+            }
+        } else {
+            // Fallback : comportement actuel (slug dans l'URL)
+            String pathInfo = request.getPathInfo(); // Ex: /mon-article
+            if (pathInfo == null || pathInfo.equals("/")) {
+                request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
+                return;
+            }
+            slug = pathInfo.substring(1);
+            if (slug.endsWith("/")) {
+                slug = slug.substring(0, slug.length() - 1);
+            }
+            if (slug.isBlank() || slug.contains("/")) {
+                request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
+                return;
+            }
+            try {
+                article = articleDAO.findBySlug(slug);
+            } catch (SQLException e) {
+                throw new ServletException("Erreur lors de la récupération de l'article", e);
+            }
         }
 
         try {
-            Article article = articleDAO.findBySlug(slug);
-
             // Vérifier que l'article existe et est publié
             if (article == null || !"PUBLIE".equals(article.getStatut())) {
                 request.getRequestDispatcher("/WEB-INF/views/404.jsp").forward(request, response);
@@ -60,13 +76,18 @@ public class ArticlePublicServlet extends HttpServlet {
 
             // Charger les autres articles publiés (pour "À lire aussi")
             List<Article> allPublished = articleDAO.findAllPublished();
-            allPublished.removeIf(a -> a.getId().equals(article.getId()));
+            final Long currentArticleId = article.getId();
+            allPublished.removeIf(a -> a.getId().equals(currentArticleId));
             List<Article> relatedArticles = allPublished.size() > 3 ? allPublished.subList(0, 3) : allPublished;
 
             // Passer l'article et les images associées à la JSP
             request.setAttribute("article", article);
             request.setAttribute("images", images);
             request.setAttribute("relatedArticles", relatedArticles);
+            // On peut aussi passer slug, id, date à la JSP si besoin
+            request.setAttribute("slug", slug);
+            request.setAttribute("id", id);
+            request.setAttribute("date", date);
             request.getRequestDispatcher("/WEB-INF/views/front/article.jsp").forward(request, response);
 
         } catch (SQLException e) {
