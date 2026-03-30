@@ -10,7 +10,7 @@ public class DatabaseConnection {
             + env("DB_HOST", "localhost") + ":5432/"
             + env("DB_NAME", "rewriting");
     private static final String USER     = env("DB_USER",     "postgres");
-    private static final String PASSWORD = env("DB_PASSWORD", "admin");
+    private static final String PASSWORD = env("DB_PASSWORD", "mamaika77");
 
     static {
         try {

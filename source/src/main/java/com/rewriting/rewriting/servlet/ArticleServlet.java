@@ -117,6 +117,7 @@ public class ArticleServlet extends HttpServlet {
         String metaDescription = request.getParameter("meta_description");
         String contenuHtml = request.getParameter("contenu_html");
         String datePubStr = request.getParameter("date_pub");
+        String statut = request.getParameter("statut");
 
         if (articleDAO.existsBySlug(slug)) {
             request.setAttribute("error", "Ce slug existe déjà.");
@@ -135,6 +136,7 @@ public class ArticleServlet extends HttpServlet {
         article.setSlug(slug);
         article.setMetaDescription(metaDescription);
         article.setContenuHtml(contenuHtml);
+        article.setStatut(statut != null ? statut : "BROUILLON");
 
         if (datePubStr != null && !datePubStr.isEmpty()) {
             try {
@@ -177,6 +179,8 @@ public class ArticleServlet extends HttpServlet {
         article.setSlug(request.getParameter("slug"));
         article.setMetaDescription(request.getParameter("meta_description"));
         article.setContenuHtml(request.getParameter("contenu_html"));
+        String statut = request.getParameter("statut");
+        article.setStatut(statut != null ? statut : "BROUILLON");
 
         articleDAO.save(article);
         response.sendRedirect(request.getContextPath() + "/admin/articles?success=Article modifié !");

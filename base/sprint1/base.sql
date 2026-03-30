@@ -12,10 +12,11 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 CREATE TABLE IF NOT EXISTS articles (
     id SERIAL PRIMARY KEY,
     titre VARCHAR(255) NOT NULL,        -- Deviendra le <h1> et le <title>
-    slug VARCHAR(255) NOT NULL,         -- Deviendra l'URL (ex: guerre-iran)
+    slug VARCHAR(255) NOT NULL UNIQUE,  -- Deviendra l'URL (ex: guerre-iran)
     contenu_html TEXT,                  -- Stocke le HTML brut (ex: <h1>...</h1>)
     meta_description VARCHAR(160),      -- Pour Google
-    date_pub DATE NOT NULL              -- Pour l'URL et le tri
+    date_pub DATE NOT NULL,             -- Pour l'URL et le tri
+    statut VARCHAR(20) DEFAULT 'BROUILLON' CHECK (statut IN ('BROUILLON', 'PUBLIE'))  -- Visibilité publique
 );
 
 -- Table Images : Galerie avec ALT (Scénario 1 & 2)
