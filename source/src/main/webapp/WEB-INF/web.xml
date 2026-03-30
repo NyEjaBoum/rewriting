@@ -16,17 +16,11 @@
     <!-- Error pages -->
     <error-page>
         <error-code>404</error-code>
-        <location>/error.jsp</location>
+        <location>/WEB-INF/views/404.jsp</location>
     </error-page>
-
     <error-page>
         <error-code>500</error-code>
         <location>/error.jsp</location>
     </error-page>
-
-    <!-- Welcome files -->
-    <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
-    </welcome-file-list>
 
 </web-app>
