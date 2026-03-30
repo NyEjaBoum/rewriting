@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -42,7 +43,7 @@
                     </div>
                     <div class="input-group">
                         <label for="date_pub">Date de publication</label>
-                        <input type="date" id="date_pub" name="date_pub" value="${article.datePub}">
+                        <input type="date" id="date_pub" name="date_pub" <c:if test="${not empty article.datePub}">value="<fmt:formatDate value="${article.datePub}" pattern="yyyy-MM-dd"/>"</c:if>>
                     </div>
                 </div>
                 <div style="margin-bottom: 20px;">

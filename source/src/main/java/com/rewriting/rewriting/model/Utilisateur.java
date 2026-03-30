@@ -1,19 +1,17 @@
 package com.rewriting.rewriting.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "utilisateurs")
 public class Utilisateur {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true, length = 50)
     private String username;
-
-    @Column(nullable = false, length = 255)
     private String password;
+
+    // Constructors
+    public Utilisateur() {}
+
+    public Utilisateur(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     // Getters and setters
     public Long getId() {

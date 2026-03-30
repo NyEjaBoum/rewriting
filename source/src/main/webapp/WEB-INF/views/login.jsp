@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Back-Office | Projet Iran 2026</title>
     <meta name="description" content="Interface d'administration pour la gestion des contenus du site.">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login-style.css">
+    <link rel="stylesheet" style="text/css" href="${pageContext.request.contextPath}/css/login-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>

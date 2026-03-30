@@ -1,29 +1,13 @@
 package com.rewriting.rewriting.model;
 
-import jakarta.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "articles")
 public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String titre;
-
-    @Column(nullable = false, unique = true)
     private String slug;
-
-    @Column(name = "contenu_html", columnDefinition = "TEXT")
     private String contenuHtml;
-
-    @Column(name = "meta_description", length = 160)
     private String metaDescription;
-
-    @Column(name = "date_pub")
-    @Temporal(TemporalType.DATE)
     private Date datePub;
 
     // Getters et Setters
