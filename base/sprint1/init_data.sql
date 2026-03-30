@@ -1,4 +1,9 @@
 -- Utilisateur par défaut
+-- Réinitialisation des tables
+TRUNCATE TABLE images RESTART IDENTITY CASCADE;
+TRUNCATE TABLE articles RESTART IDENTITY CASCADE;
+TRUNCATE TABLE utilisateurs RESTART IDENTITY CASCADE;
+
 INSERT INTO utilisateurs (username, password) VALUES ('admin', 'test');
 
 -- Article 1 : Exemple avec h1, titre et slug alignés

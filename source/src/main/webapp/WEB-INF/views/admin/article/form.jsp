@@ -43,7 +43,17 @@
                     </div>
                     <div class="input-group">
                         <label for="date_pub">Date de publication</label>
-                        <input type="date" id="date_pub" name="date_pub" <c:if test="${not empty article.datePub}">value="<fmt:formatDate value="${article.datePub}" pattern="yyyy-MM-dd"/>"</c:if>>
+                        <c:choose>
+                            <c:when test="${not empty article.datePub}">
+                                <input type="date" id="date_pub" name="date_pub"
+                                       value="<fmt:formatDate value="${article.datePub}" pattern="yyyy-MM-dd"/>">
+                            </c:when>
+                            <c:otherwise>
+                                <jsp:useBean id="now" class="java.util.Date"/>
+                                <input type="date" id="date_pub" name="date_pub"
+                                       value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd"/>">
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="input-group">
                         <label for="statut">Statut de l'article</label>
@@ -60,24 +70,26 @@
             </form>
 
             <%-- Section images : formulaire séparé (les forms imbriqués sont interdits en HTML) --%>
-            <c:if test="${not empty article.id}">
-                <section class="form-section" style="margin-bottom: 30px;">
-                    <h3>Images</h3>
-                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/uploadImage"
-                          method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
-                        <div class="input-group">
-                            <label for="imageFile">Fichier image</label>
-                            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="altText">Texte alternatif (obligatoire)</label>
-                            <input type="text" id="altText" name="altText" required>
-                        </div>
-                        <button type="submit" class="btn-primary" style="margin-top: 8px;">Ajouter une image</button>
-                    </form>
+            <section class="form-section" style="margin-bottom: 30px;">
+                <h3>Images</h3>
+                <form action="${not empty article.id ? pageContext.request.contextPath.concat('/admin/articles/').concat(article.id).concat('/uploadImage') : ''}"
+                      method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
+                    <div class="input-group">
+                        <label for="imageFile">Fichier image</label>
+                        <input type="file" id="imageFile" name="imageFile" accept="image/*" required <c:if test="${empty article.id}">disabled</c:if>>
+                    </div>
+                    <div class="input-group">
+                        <label for="altText">Texte alternatif (obligatoire)</label>
+                        <input type="text" id="altText" name="altText" required <c:if test="${empty article.id}">disabled</c:if>>
+                    </div>
+                    <button type="submit" class="btn-primary" style="margin-top: 8px;" <c:if test="${empty article.id}">disabled</c:if>>Ajouter une image</button>
+                    <c:if test="${empty article.id}">
+                        <div style="color:#888; font-size:13px; margin-top:8px;">Vous pourrez ajouter des images après avoir créé l'article.</div>
+                    </c:if>
+                </form>
 
-                    <c:if test="${not empty images}">
-                        <div style="margin-top:20px;">
+                <c:if test="${not empty images}">
+                    <div style="margin-top:20px;">
                             <h4>Images associées :</h4>
                             <ul style="list-style:none; padding:0;">
                                 <c:forEach var="img" items="${images}">
@@ -95,7 +107,6 @@
                         </div>
                     </c:if>
                 </section>
-            </c:if>
         </section>
 
         <!-- Aperçu -->

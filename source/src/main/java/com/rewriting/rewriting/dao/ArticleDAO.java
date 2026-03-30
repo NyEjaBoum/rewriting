@@ -55,6 +55,49 @@ public class ArticleDAO {
         return articles;
     }
 
+    public List<Article> findAllPublished(int offset, int limit) throws SQLException {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT * FROM articles WHERE statut = 'PUBLIE' ORDER BY date_pub DESC OFFSET ? LIMIT ?";
+        ImageDAO imageDAO = new ImageDAO();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Article article = new Article();
+                    article.setId(rs.getLong("id"));
+                    article.setTitre(rs.getString("titre"));
+                    article.setSlug(rs.getString("slug"));
+                    article.setContenuHtml(rs.getString("contenu_html"));
+                    article.setMetaDescription(rs.getString("meta_description"));
+                    article.setDatePub(rs.getDate("date_pub"));
+                    article.setStatut(rs.getString("statut"));
+                    article.setImages(imageDAO.findByArticleId(article.getId()));
+                    articles.add(article);
+                }
+            }
+        }
+        return articles;
+    }
+
+    public int countPublished() throws SQLException {
+        String query = "SELECT COUNT(*) FROM articles WHERE statut = 'PUBLIE'";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
     public Article findById(Long id) throws SQLException {
         String query = "SELECT * FROM articles WHERE id = ?";
 
