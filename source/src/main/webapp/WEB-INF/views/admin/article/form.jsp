@@ -1,11 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title><c:out value="${formTitle != null ? formTitle : 'Article'}"/></title>
-    <link rel="stylesheet" href="/css/editor-style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/editor-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/lvkaijv4dia4mvlq3yvfhmy2p7ng3xrugyqclql1apwcyqod/tinymce/6/tinymce.min.js"></script>
 </head>
@@ -40,7 +41,7 @@
                     </div>
                     <div class="input-group">
                         <label for="date_pub">Date de publication</label>
-                        <input type="date" id="date_pub" name="date_pub" value="${article.datePub}">
+                        <input type="date" id="date_pub" name="date_pub" <c:if test="${not empty article.datePub}">value="<fmt:formatDate value="${article.datePub}" pattern="yyyy-MM-dd"/>"</c:if>>
                     </div>
                 </div>
                 <div style="margin-bottom: 20px;">
