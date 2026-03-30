@@ -41,3 +41,10 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO images (url_path, alt_text, article_id)
 VALUES ('/img/carte-conflit.jpg', 'Carte des tensions de la guerre en Iran', 9555),
        ('/img/soldats.jpg', 'Positions militaires à la frontière iranienne', 9555);
+
+INSERT INTO articles (id, titre, slug, contenu_html, meta_description, date_pub, statut)
+VALUES (1, 'Test Image Back', 'test-image-back',
+        '<h1>Test Image Back</h1><p><strong>Bold</strong></p>',
+        'Test Description Image Back',
+        '2026-03-30', 'PUBLIE')
+ON CONFLICT (id) DO NOTHING;

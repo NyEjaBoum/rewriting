@@ -33,6 +33,7 @@ public class ArticleDAO {
     public List<Article> findAllPublished() throws SQLException {
         List<Article> articles = new ArrayList<>();
         String query = "SELECT * FROM articles WHERE statut = 'PUBLIE' ORDER BY date_pub DESC";
+        ImageDAO imageDAO = new ImageDAO();
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -47,6 +48,7 @@ public class ArticleDAO {
                 article.setMetaDescription(rs.getString("meta_description"));
                 article.setDatePub(rs.getDate("date_pub"));
                 article.setStatut(rs.getString("statut"));
+                article.setImages(imageDAO.findByArticleId(article.getId()));
                 articles.add(article);
             }
         }

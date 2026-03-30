@@ -9,40 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><c:out value="${article.titre}"/> | Iran Pulse</title>
     <meta name="description" content="<c:out value='${article.metaDescription}'/>">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/article-public.css">
 </head>
 <body>
 <fmt:setLocale value="fr_FR"/>
-
-    <header class="site-header">
-        <div class="header-content">
-            <div class="header-left">
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            </div>
-            <h1 class="logo"><a href="${pageContext.request.contextPath}/">IRAN PULSE</a></h1>
-            <div class="header-right">
-                <a href="${pageContext.request.contextPath}/login">
-                    <svg class="icon-svg user-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <nav class="nav-bar">
-        <ul class="categories">
-            <li><a href="${pageContext.request.contextPath}/">Accueil</a></li>
-            <li class="active">Actualités</li>
-            <li>Politique</li>
-            <li>Sport</li>
-            <li>Économie</li>
-            <li>Culture</li>
-            <li>Technologie</li>
-            <li>Sciences</li>
-            <li>Santé</li>
-        </ul>
-    </nav>
 
     <main class="article-container">
         <nav class="article-nav">
@@ -54,10 +25,10 @@
                 <span class="category-badge">Actualités</span>
                 <h1>${article.titre}</h1>
                 <div class="post-meta">
-                    <div class="author-img"></div>
+                    <img src="https://i.pravatar.cc/100?u=redaction" alt="" class="author-avatar">
                     <div class="meta-text">
-                        <strong>Rédaction</strong>
-                        <span>Publié le <fmt:formatDate value="${article.datePub}" pattern="d MMMM yyyy"/></span>
+                        <strong>Par la Rédaction</strong>
+                        <span>Publié le <fmt:formatDate value="${article.datePub}" pattern="EEEE d MMMM yyyy"/></span>
                     </div>
                 </div>
             </header>
@@ -78,7 +49,7 @@
 
             <c:if test="${fn:length(images) > 1}">
                 <section class="related-articles">
-                    <h2 class="section-title">Images</h2>
+                    <h2 class="section-title">À lire aussi</h2>
                     <div class="related-grid">
                         <c:forEach var="image" items="${images}" begin="1">
                             <div class="related-card">
@@ -87,6 +58,7 @@
                                          alt="<c:out value='${image.altText}'/>">
                                 </div>
                                 <div class="card-content">
+                                    <span class="card-category">Actualités</span>
                                     <p><c:out value="${image.altText}"/></p>
                                 </div>
                             </div>
