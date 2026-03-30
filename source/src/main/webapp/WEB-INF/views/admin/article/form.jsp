@@ -17,23 +17,25 @@
         <header class="editor-header">
             <h2><c:out value="${formTitle != null ? formTitle : 'Article'}"/></h2>
             <div class="header-actions">
-                <button class="btn-secondary" type="button">Enregistrer brouillon</button>
+                <button class="btn-secondary" type="button" onclick="showPreview()">Aperçu</button>
                 <button class="btn-primary" type="submit" form="articleForm">Publier l'article</button>
             </div>
         </header>
         <section class="editor-form">
-            <form id="articleForm" action="${actionUrl}" method="post" onsubmit="beforeSubmit()">
+            <form id="articleForm" action="${actionUrl}" method="post" onsubmit="return beforeSubmit()">
                 <c:if test="${not empty article.id}">
                     <input type="hidden" name="id" value="${article.id}">
                 </c:if>
                 <div class="form-section">
                     <div class="input-group">
                         <label for="titre">Titre de l'article (H1)</label>
-                        <input type="text" id="titre" name="titre" placeholder="Entrez le titre ici..." value="${article.titre}" oninput="updateSlug()" required>
+                        <input type="text" id="titre" name="titre" placeholder="Entrez le titre ici..."
+                               value="<c:out value='${article.titre}'/>" oninput="updateSlug()" required>
                     </div>
                     <div class="input-group">
                         <label for="slug">URL normalisée (Slug / Rewriting)</label>
-                        <input type="text" id="slug" name="slug" placeholder="url-de-l-article" value="${article.slug}" readonly required>
+                        <input type="text" id="slug" name="slug" placeholder="url-de-l-article"
+                               value="<c:out value='${article.slug}'/>" readonly required>
                     </div>
                     <div class="input-group">
                         <label for="meta-desc">Méta Description (SEO)</label>
@@ -50,13 +52,25 @@
                 </div>
             </form>
         </section>
+
+        <!-- Aperçu -->
+        <div id="preview-overlay" style="display:none;">
+            <div id="preview-box">
+                <button onclick="closePreview()" id="preview-close">✕ Fermer</button>
+                <h1 id="preview-titre"></h1>
+                <div id="preview-content"></div>
+            </div>
+        </div>
     </main>
 </div>
 
 <script>
     function updateSlug() {
         var titre = document.getElementById('titre').value;
-        var slug = titre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        var slug = titre.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // accents
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
         document.getElementById('slug').value = slug;
     }
 
