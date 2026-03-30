@@ -56,7 +56,8 @@
                             <div class="hero-image">
                                 <c:choose>
                                     <c:when test="${not empty mainArticle.images}">
-                                        <img src="${pageContext.request.contextPath}${mainArticle.images[0].urlPath}"
+                                        <c:set var="imgSrc0" value="${mainArticle.images[0].urlPath}"/>
+                                        <img src="${fn:startsWith(imgSrc0,'http') ? imgSrc0 : pageContext.request.contextPath.concat(imgSrc0)}"
                                              alt="<c:out value='${mainArticle.images[0].altText}'/>">
                                     </c:when>
                                     <c:otherwise>
@@ -94,7 +95,8 @@
                             <div class="side-item">
                                 <c:choose>
                                     <c:when test="${not empty article.images}">
-                                        <img src="${pageContext.request.contextPath}${article.images[0].urlPath}"
+                                        <c:set var="sideImgSrc" value="${article.images[0].urlPath}"/>
+                                        <img src="${fn:startsWith(sideImgSrc,'http') ? sideImgSrc : pageContext.request.contextPath.concat(sideImgSrc)}"
                                              alt="<c:out value='${article.images[0].altText}'/>">
                                     </c:when>
                                     <c:otherwise>

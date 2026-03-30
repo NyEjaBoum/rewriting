@@ -35,7 +35,8 @@
 
             <c:if test="${not empty images}">
                 <figure class="main-figure">
-                    <img src="${pageContext.request.contextPath}${images[0].urlPath}"
+                    <c:set var="mainImgSrc" value="${images[0].urlPath}"/>
+                    <img src="${fn:startsWith(mainImgSrc,'http') ? mainImgSrc : pageContext.request.contextPath.concat(mainImgSrc)}"
                          alt="<c:out value='${images[0].altText}'/>">
                     <c:if test="${not empty images[0].altText}">
                         <figcaption><c:out value="${images[0].altText}"/></figcaption>
@@ -54,7 +55,8 @@
                         <c:forEach var="image" items="${images}" begin="1">
                             <div class="related-card">
                                 <div class="card-image">
-                                    <img src="${pageContext.request.contextPath}${image.urlPath}"
+                                    <c:set var="relImgSrc" value="${image.urlPath}"/>
+                                    <img src="${fn:startsWith(relImgSrc,'http') ? relImgSrc : pageContext.request.contextPath.concat(relImgSrc)}"
                                          alt="<c:out value='${image.altText}'/>">
                                 </div>
                                 <div class="card-content">
