@@ -7,7 +7,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iran Pulse</title>
+    <title>Iran Pulse | Actualités</title>
+    <meta name="description" content="Iran Pulse — Suivez l'actualité en temps réel : politique, économie, culture et plus.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Iran Pulse | Actualités">
+    <meta property="og:description" content="Iran Pulse — Suivez l'actualité en temps réel : politique, économie, culture et plus.">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -58,7 +62,7 @@
                                     <c:set var="imgSrc" value="${article.images[0].urlPath}"/>
                                     <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
                                          alt="<c:out value='${article.images[0].altText}'/>"
-                                         class="article-card-image">
+                                         class="article-card-image" loading="lazy">
                                 </c:when>
                                 <c:otherwise>
                                     <div class="article-card-placeholder">

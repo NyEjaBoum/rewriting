@@ -119,17 +119,7 @@ public class ArticleServlet extends HttpServlet {
         String datePubStr = request.getParameter("date_pub");
         String statut = request.getParameter("statut");
 
-        if (articleDAO.existsBySlug(slug)) {
-            request.setAttribute("error", "Ce slug existe déjà.");
-            request.setAttribute("formTitle", "Créer un nouvel article");
-            request.setAttribute("actionUrl", request.getContextPath() + "/admin/articles/add");
-            try {
-                request.getRequestDispatcher("/WEB-INF/views/admin/article/form.jsp").forward(request, response);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
+        slug = articleDAO.generateUniqueSlug(titre);
 
         Article article = new Article();
         article.setTitre(titre);
