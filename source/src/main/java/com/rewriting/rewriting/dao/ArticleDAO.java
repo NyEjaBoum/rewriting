@@ -45,6 +45,12 @@ public class ArticleDAO {
                     article.setContenuHtml(rs.getString("contenu_html"));
                     article.setMetaDescription(rs.getString("meta_description"));
                     article.setDatePub(rs.getDate("date_pub"));
+
+                    // Charger les images associées
+                    ImageDAO imageDAO = new ImageDAO();
+                    java.util.List<com.rewriting.rewriting.model.Image> images = imageDAO.findByArticleId(article.getId());
+                    article.setImages(images);
+
                     return article;
                 }
             }
