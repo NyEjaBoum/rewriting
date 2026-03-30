@@ -73,7 +73,7 @@
                             <label for="altText">Texte alternatif (obligatoire)</label>
                             <input type="text" id="altText" name="altText" required>
                         </div>
-                        <button type="submit" class="btn-primary">Ajouter une image</button>
+                        <button type="submit" class="btn-primary" style="margin-top: 8px;">Ajouter une image</button>
                     </form>
 
                     <c:if test="${not empty images}">
@@ -110,6 +110,29 @@
 </div>
 
 <script>
+    function showPreview() {
+        var titre = document.getElementById('titre').value;
+        var editor = tinymce.get('rich-editor');
+        var content = editor ? editor.getContent() : document.getElementById('rich-editor').value;
+        document.getElementById('preview-titre').textContent = titre;
+        document.getElementById('preview-content').innerHTML = content;
+        document.getElementById('preview-overlay').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePreview() {
+        document.getElementById('preview-overlay').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function validateImageForm() {
+        var file = document.getElementById('imageFile');
+        var alt  = document.getElementById('altText');
+        if (!file || !file.value) { alert('Veuillez choisir un fichier image.'); return false; }
+        if (!alt  || !alt.value.trim()) { alert('Le texte alternatif est obligatoire.'); return false; }
+        return true;
+    }
+
     function updateSlug() {
         var titre = document.getElementById('titre').value;
         var slug = titre.toLowerCase()
