@@ -8,27 +8,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iran Pulse | Actualités</title>
-    <meta name="description" content="Iran Pulse — Suivez l'actualité en temps réel : politique, économie, culture et plus.">
+    <meta name="description" content="Iran Pulse — Suivez en temps réel le conflit en Iran : analyses géopolitiques, diplomatie, économie de guerre et situation humanitaire.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Iran Pulse | Actualités">
-    <meta property="og:description" content="Iran Pulse — Suivez l'actualité en temps réel : politique, économie, culture et plus.">
+    <meta property="og:description" content="Iran Pulse — Suivez en temps réel le conflit en Iran : analyses géopolitiques, diplomatie, économie de guerre et situation humanitaire.">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 </head>
 <body>
 
     <header class="site-header">
         <div class="header-content">
             <div class="header-left">
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <button class="icon-btn" aria-label="Rechercher">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+                <button class="icon-btn" aria-label="Menu">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
             </div>
 
             <h1 class="logo"><a href="${pageContext.request.contextPath}/">IRAN PULSE</a></h1>
 
             <div class="header-right">
-                <a href="${pageContext.request.contextPath}/login">
-                    <svg class="icon-svg user-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+                <a href="${pageContext.request.contextPath}/login" aria-label="Se connecter">
+                    <svg class="icon-svg user-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
                 </a>
             </div>
         </div>
@@ -38,14 +45,12 @@
         <ul class="categories">
             <li class="active">Accueil</li>
             <li>Actualités</li>
-            <li>Top News</li>
-            <li>Politique</li>
-            <li>Sport</li>
+            <li>Conflit armé</li>
+            <li>Géopolitique</li>
+            <li>Diplomatie</li>
             <li>Économie</li>
-            <li>Culture</li>
-            <li>Technologie</li>
-            <li>Sciences</li>
-            <li>Santé</li>
+            <li>Humanitaire</li>
+            <li>Analyses</li>
         </ul>
     </nav>
 
@@ -54,15 +59,24 @@
             <c:when test="${not empty articles}">
                 <%-- Grille d'articles --%>
                 <div class="articles-grid">
-                    <c:forEach var="article" items="${articles}">
+                    <c:forEach var="article" items="${articles}" varStatus="loop">
                         <article class="article-card">
                             <%-- Image principale ou placeholder --%>
                             <c:choose>
                                 <c:when test="${not empty article.images}">
                                     <c:set var="imgSrc" value="${article.images[0].urlPath}"/>
-                                    <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
-                                         alt="<c:out value='${article.images[0].altText}'/>"
-                                         class="article-card-image" loading="lazy">
+                                    <c:choose>
+                                        <c:when test="${loop.first}">
+                                            <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
+                                                 alt="<c:out value='${article.images[0].altText}'/>"
+                                                 class="article-card-image" fetchpriority="high">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
+                                                 alt="<c:out value='${article.images[0].altText}'/>"
+                                                 class="article-card-image" loading="lazy">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="article-card-placeholder">
@@ -76,7 +90,7 @@
                                 <span class="category-badge">Actualités</span>
 
                                 <h2 class="article-card-title">
-                                    <a href="${pageContext.request.contextPath}/article/${article.slug}">
+                                    <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
                                         <c:out value="${article.titre}"/>
                                     </a>
                                 </h2>
