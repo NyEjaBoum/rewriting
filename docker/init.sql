@@ -84,13 +84,20 @@ INSERT INTO articles (titre, slug, contenu_html, meta_description, date_pub, sta
 ON CONFLICT (id) DO NOTHING;
 
 -- Images
-INSERT INTO images (url_path, alt_text, article_id) VALUES
-('https://images.unsplash.com/photo-1579004465540-f4f1a4d22e37?w=1400&auto=format&fit=crop', 'Opérations militaires en Iran', 1),
-('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&auto=format&fit=crop', 'Marché financier et économie iranienne', 2),
-('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1400&auto=format&fit=crop', 'Négociations diplomatiques à Vienne', 3),
-('https://images.unsplash.com/photo-1476304884326-cd2c88572c5f?w=1400&auto=format&fit=crop', 'Carte géopolitique du Moyen-Orient', 4),
-('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1400&auto=format&fit=crop', 'Déplacés et aide humanitaire en Iran', 5),
-('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400&auto=format&fit=crop', 'Analyse stratégique du conflit au Moyen-Orient', 6),
-('https://images.unsplash.com/photo-1547483238-f400e65ccd56?w=1400&auto=format&fit=crop', 'Opérations militaires dans le nord-ouest iranien', 7),
-('https://images.unsplash.com/photo-1569682840522-90c04b4cb199?w=1400&auto=format&fit=crop', 'Tensions géopolitiques en Iran', 8)
-ON CONFLICT DO NOTHING;
+INSERT INTO images (url_path, alt_text, article_id)
+SELECT '/assets/images/operation-militaire.jpg',  'Opérations militaires en Iran',                    id FROM articles WHERE slug = 'bilan-48h-point-complet-conflit'
+UNION ALL
+SELECT '/assets/images/marche-financiere.jpg',    'Marché financier et économie iranienne',            id FROM articles WHERE slug = 'economie-iranienne-impact-sanctions'
+UNION ALL
+SELECT '/assets/images/diplomatie.jpg',           'Négociations diplomatiques à Vienne',               id FROM articles WHERE slug = 'diplomatie-negociations-nucleaire-iranien'
+UNION ALL
+SELECT '/assets/images/geopolitique.jpg',         'Carte géopolitique du Moyen-Orient',                id FROM articles WHERE slug = 'geopolitique-alliances-regionales-conflit-iranien'
+UNION ALL
+SELECT '/assets/images/humanitaire.jpg',          'Déplacés et aide humanitaire en Iran',              id FROM articles WHERE slug = 'crise-humanitaire-deplaces-internes-iran'
+UNION ALL
+SELECT '/assets/images/absolutvision-WYd_PkCa1BY-unsplash.jpg', 'Analyse stratégique du conflit',     id FROM articles WHERE slug = 'analyse-conflit-iranien-remodele-moyen-orient'
+UNION ALL
+SELECT '/assets/images/operation-militaire.jpg',  'Offensives militaires dans le nord-ouest iranien',  id FROM articles WHERE slug = 'offensives-militaires-nord-ouest-bilan-strategique'
+UNION ALL
+SELECT '/assets/images/geopolitique.jpg',         'Tensions géopolitiques et origines du conflit',     id FROM articles WHERE slug = 'guerre-iran-analyse-tensions-geopolitiques-origines'
+;
