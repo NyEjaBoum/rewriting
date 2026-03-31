@@ -128,6 +128,13 @@ public class ArticleServlet extends HttpServlet {
         article.setContenuHtml(contenuHtml);
         article.setStatut(statut != null ? statut : "BROUILLON");
 
+        // Auteur depuis la session
+        com.rewriting.rewriting.model.Utilisateur sessionUser =
+            (com.rewriting.rewriting.model.Utilisateur) request.getSession().getAttribute("user");
+        if (sessionUser != null && sessionUser.getNomComplet() != null) {
+            article.setAuteurNom(sessionUser.getNomComplet());
+        }
+
         if (datePubStr != null && !datePubStr.isEmpty()) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

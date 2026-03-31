@@ -25,6 +25,7 @@ public class ArticleDAO {
                 article.setMetaDescription(rs.getString("meta_description"));
                 article.setDatePub(rs.getDate("date_pub"));
                 article.setStatut(rs.getString("statut"));
+                article.setAuteurNom(rs.getString("auteur_nom"));
                 articles.add(article);
             }
         }
@@ -130,6 +131,7 @@ public class ArticleDAO {
                     article.setMetaDescription(rs.getString("meta_description"));
                     article.setDatePub(rs.getDate("date_pub"));
                     article.setStatut(rs.getString("statut"));
+                    article.setAuteurNom(rs.getString("auteur_nom"));
 
                     // Charger les images associées
                     ImageDAO imageDAO = new ImageDAO();
@@ -160,6 +162,7 @@ public class ArticleDAO {
                     article.setMetaDescription(rs.getString("meta_description"));
                     article.setDatePub(rs.getDate("date_pub"));
                     article.setStatut(rs.getString("statut"));
+                    article.setAuteurNom(rs.getString("auteur_nom"));
 
                     // Charger les images associées
                     ImageDAO imageDAO = new ImageDAO();
@@ -194,7 +197,7 @@ public class ArticleDAO {
     }
 
     private Article insert(Article article) throws SQLException {
-        String query = "INSERT INTO articles (titre, slug, contenu_html, meta_description, date_pub, statut) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO articles (titre, slug, contenu_html, meta_description, date_pub, statut, auteur_nom) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -205,6 +208,7 @@ public class ArticleDAO {
             pstmt.setString(4, article.getMetaDescription());
             pstmt.setDate(5, new java.sql.Date(article.getDatePub().getTime()));
             pstmt.setString(6, article.getStatut() != null ? article.getStatut() : "BROUILLON");
+            pstmt.setString(7, article.getAuteurNom() != null ? article.getAuteurNom() : "Rédaction");
 
             pstmt.executeUpdate();
 

@@ -67,9 +67,9 @@
                 <span class="category-badge">Actualités</span>
                 <h1>${article.titre}</h1>
                 <div class="post-meta">
-                    <img src="https://i.pravatar.cc/100?u=redaction" alt="" class="author-avatar">
+                    <img src="https://i.pravatar.cc/100?u=${article.auteurNom}" alt="${article.auteurNom}" class="author-avatar">
                     <div class="meta-text">
-                        <strong>Par la Rédaction</strong>
+                        <strong>Par <c:out value="${not empty article.auteurNom ? article.auteurNom : 'Rédaction'}"/></strong>
                         <span>Publié le <fmt:formatDate value="${article.datePub}" pattern="EEEE d MMMM yyyy"/></span>
                     </div>
                 </div>

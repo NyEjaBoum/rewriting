@@ -77,6 +77,8 @@
                                         </c:choose>
                                     </td>
                                     <td class="actions-cell">
+                                        <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html"
+                                           class="btn-icon" title="Voir sur le site" target="_blank">👁</a>
                                         <a href="${pageContext.request.contextPath}/admin/articles/edit/${article.id}"
                                            class="btn-icon" title="Modifier">✎</a>
                                         <a href="${pageContext.request.contextPath}/admin/articles/delete/${article.id}"
