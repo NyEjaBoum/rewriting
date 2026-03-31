@@ -83,7 +83,7 @@
         </c:if>
 
         <%-- Formulaire principal article --%>
-        <form id="articleForm" action="${actionUrl}" method="post" onsubmit="return beforeSubmit()">
+        <form id="articleForm" action="${actionUrl}" method="post" enctype="multipart/form-data" onsubmit="return beforeSubmit()">
             <c:if test="${not empty article.id}">
                 <input type="hidden" name="id" value="${article.id}">
             </c:if>
@@ -146,55 +146,87 @@
             </div>
         </form>
 
-        <%-- Section images (form séparé — les forms imbriqués sont interdits en HTML) --%>
+        <%-- Section images --%>
         <div class="images-section">
-            <h3>Images</h3>
+            <h3>Image de couverture</h3>
 
-            <form action="${not empty article.id ? pageContext.request.contextPath.concat('/admin/articles/').concat(article.id).concat('/uploadImage') : ''}"
-                  method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
-                <div class="upload-row">
-                    <div class="input-group">
-                        <label for="imageFile">Fichier image</label>
-                        <input type="file" id="imageFile" name="imageFile" accept="image/*"
-                               required <c:if test="${empty article.id}">disabled</c:if>>
-                    </div>
-                    <div class="input-group">
-                        <label for="altText">Texte alternatif (SEO)</label>
-                        <input type="text" id="altText" name="altText"
-                               placeholder="Description de l'image..."
-                               required <c:if test="${empty article.id}">disabled</c:if>>
-                    </div>
-                    <button type="submit" class="btn-primary"
-                            <c:if test="${empty article.id}">disabled</c:if>>Ajouter</button>
-                </div>
-                <c:if test="${empty article.id}">
-                    <p class="disabled-notice">Vous pourrez ajouter des images après avoir créé l'article.</p>
-                </c:if>
-            </form>
-
-            <c:if test="${not empty images}">
-                <div class="images-grid">
-                    <c:forEach var="img" items="${images}">
-                        <div class="image-item">
-                            <img src="${pageContext.request.contextPath}${img.urlPath}"
-                                 alt="<c:out value='${img.altText}'/>">
-                            <span><c:out value="${img.altText}"/></span>
-                            <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/deleteImage/${img.id}"
-                                  method="post" style="display:inline;">
-                                <button type="submit" class="btn-icon btn-danger"
-                                        onclick="return confirm('Supprimer cette image ?')"
-                                        title="Supprimer">🗑</button>
-                            </form>
+            <c:choose>
+                <c:when test="${empty article.id}">
+                    <%-- Création : champs image directement dans le formulaire principal --%>
+                    <div class="upload-row" id="upload-row-create">
+                        <div class="input-group">
+                            <label for="imageFile">Fichier image <span style="color:#aaa;font-weight:400;">(optionnel)</span></label>
+                            <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                   onchange="previewImage(this); syncAltPlaceholder(this)">
                         </div>
-                    </c:forEach>
-                </div>
-            </c:if>
+                        <div class="input-group">
+                            <label for="altText">Texte alternatif (SEO)</label>
+                            <input type="text" id="altText" name="altText"
+                                   placeholder="Description de l'image...">
+                        </div>
+                    </div>
+                    <div id="image-preview-wrap" style="display:none; margin-top:16px;">
+                        <img id="image-preview" src="" alt="Aperçu"
+                             style="max-height:180px; border-radius:12px; border:1px solid #eee; object-fit:cover;">
+                        <button type="button" onclick="clearImagePreview()"
+                                style="display:block; margin-top:8px; background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px; font-weight:600;">✕ Supprimer l'image</button>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <%-- Édition : formulaire séparé (les forms imbriqués sont interdits en HTML) --%>
+                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/uploadImage"
+                          method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
+                        <div class="upload-row">
+                            <div class="input-group">
+                                <label for="imageFile">Fichier image</label>
+                                <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="altText">Texte alternatif (SEO)</label>
+                                <input type="text" id="altText" name="altText"
+                                       placeholder="Description de l'image..." required>
+                            </div>
+                            <button type="submit" class="btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+
+                    <c:if test="${not empty images}">
+                        <div class="images-grid">
+                            <c:forEach var="img" items="${images}">
+                                <div class="image-item">
+                                    <img src="${pageContext.request.contextPath}${img.urlPath}"
+                                         alt="<c:out value='${img.altText}'/>">
+                                    <span><c:out value="${img.altText}"/></span>
+                                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/deleteImage/${img.id}"
+                                          method="post" style="display:inline;">
+                                        <button type="submit" class="btn-icon btn-danger"
+                                                onclick="return confirm('Supprimer cette image ?')"
+                                                title="Supprimer">🗑</button>
+                                    </form>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:if>
+                </c:otherwise>
+            </c:choose>
         </div>
 
         <%-- Aperçu --%>
         <div id="preview-overlay" style="display:none;">
             <div id="preview-box">
                 <button onclick="closePreview()" id="preview-close">✕ Fermer</button>
+                <c:choose>
+                    <c:when test="${not empty images}">
+                        <img id="preview-cover-img"
+                             data-src="${pageContext.request.contextPath}${images[0].urlPath}"
+                             src="" alt=""
+                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin-bottom:28px;">
+                    </c:when>
+                    <c:otherwise>
+                        <img id="preview-cover-img" src="" alt=""
+                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin-bottom:28px;">
+                    </c:otherwise>
+                </c:choose>
                 <h1 id="preview-titre"></h1>
                 <div id="preview-content"></div>
             </div>
@@ -207,8 +239,23 @@
         var titre = document.getElementById('titre').value;
         var editor = tinymce.get('rich-editor');
         var content = editor ? editor.getContent() : document.getElementById('rich-editor').value;
+
         document.getElementById('preview-titre').textContent = titre;
         document.getElementById('preview-content').innerHTML = content;
+
+        // Image : aperçu local (création) ou image déjà enregistrée (édition)
+        var previewImg = document.getElementById('preview-cover-img');
+        var localPreview = document.getElementById('image-preview');
+        if (localPreview && localPreview.src && localPreview.src !== window.location.href) {
+            previewImg.src = localPreview.src;
+            previewImg.style.display = 'block';
+        } else if (previewImg.dataset.src) {
+            previewImg.src = previewImg.dataset.src;
+            previewImg.style.display = 'block';
+        } else {
+            previewImg.style.display = 'none';
+        }
+
         document.getElementById('preview-overlay').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
@@ -216,6 +263,34 @@
     function closePreview() {
         document.getElementById('preview-overlay').style.display = 'none';
         document.body.style.overflow = '';
+    }
+
+    function previewImage(input) {
+        var wrap = document.getElementById('image-preview-wrap');
+        var preview = document.getElementById('image-preview');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                wrap.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearImagePreview() {
+        document.getElementById('imageFile').value = '';
+        document.getElementById('image-preview-wrap').style.display = 'none';
+        document.getElementById('image-preview').src = '';
+    }
+
+    function syncAltPlaceholder(input) {
+        // Pré-remplir l'alt text avec le nom du fichier si vide
+        var altInput = document.getElementById('altText');
+        if (altInput && !altInput.value && input.files && input.files[0]) {
+            var name = input.files[0].name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+            altInput.placeholder = name;
+        }
     }
 
     function validateImageForm() {
