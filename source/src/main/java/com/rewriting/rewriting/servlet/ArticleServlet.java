@@ -196,7 +196,19 @@ public class ArticleServlet extends HttpServlet {
         article.setStatut(statut != null ? statut : "BROUILLON");
 
         articleDAO.save(article);
-        response.sendRedirect(request.getContextPath() + "/admin/articles?success=Article modifié !");
+
+        try {
+            Part filePart = request.getPart("imageFile");
+            String altText = request.getParameter("altText");
+            if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
+                String alt = (altText != null && !altText.trim().isEmpty()) ? altText.trim() : article.getTitre();
+                saveImageForArticle(article, filePart, alt, request);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/articles/edit/" + id + "?success=Article modifié !");
     }
 
     private void deleteArticle(Long id, HttpServletRequest request, HttpServletResponse response)

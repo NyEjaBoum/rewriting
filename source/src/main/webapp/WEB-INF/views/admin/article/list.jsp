@@ -24,7 +24,10 @@
                 <h1>Gestion des articles</h1>
                 <p>Liste complète des contenus du site d'information sur l'Iran.</p>
             </div>
-            <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">+ Ajouter un article</a>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <a href="${pageContext.request.contextPath}/" class="btn-secondary" target="_blank">↗ Voir le site</a>
+                <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">+ Ajouter un article</a>
+            </div>
         </header>
 
         <c:if test="${not empty success}">

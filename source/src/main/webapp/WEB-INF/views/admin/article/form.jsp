@@ -159,6 +159,7 @@
                             <div class="file-upload-wrapper">
                                 <label for="imageFile" class="custom-file-upload">Choisir une image</label>
                                 <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                       form="articleForm"
                                        onchange="previewImage(this); syncAltPlaceholder(this); updateFileName(this, 'file-name-create')">
                                 <span id="file-name-create" class="file-name">Aucun fichier choisi</span>
                             </div>
@@ -166,7 +167,8 @@
                         <div class="input-group">
                             <label for="altText">Texte alternatif (SEO)</label>
                             <input type="text" id="altText" name="altText"
-                                   placeholder="Description de l'image...">
+                                   placeholder="Description de l'image..."
+                                   form="articleForm">
                         </div>
                     </div>
                     <div id="image-preview-wrap" style="display:none; margin-top:16px;">
@@ -177,27 +179,31 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <%-- Édition : formulaire séparé (les forms imbriqués sont interdits en HTML) --%>
-                    <form action="${pageContext.request.contextPath}/admin/articles/${article.id}/uploadImage"
-                          method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
-                        <div class="upload-row">
-                            <div class="input-group">
-                                <label>Fichier image</label>
-                                <div class="file-upload-wrapper">
-                                    <label for="imageFile" class="custom-file-upload">Choisir une image</label>
-                                    <input type="file" id="imageFile" name="imageFile" accept="image/*"
-                                           required onchange="updateFileName(this, 'file-name-edit')">
-                                    <span id="file-name-edit" class="file-name">Aucun fichier choisi</span>
-                                </div>
+                    <%-- Édition : champs associés au formulaire principal via form="articleForm" --%>
+                    <div class="upload-row">
+                        <div class="input-group">
+                            <label>Fichier image <span style="color:#aaa;font-weight:400;">(optionnel)</span></label>
+                            <div class="file-upload-wrapper">
+                                <label for="imageFile" class="custom-file-upload">Choisir une image</label>
+                                <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                       form="articleForm"
+                                       onchange="previewImage(this); syncAltPlaceholder(this); updateFileName(this, 'file-name-edit')">
+                                <span id="file-name-edit" class="file-name">Aucun fichier choisi</span>
                             </div>
-                            <div class="input-group">
-                                <label for="altText">Texte alternatif (SEO)</label>
-                                <input type="text" id="altText" name="altText"
-                                       placeholder="Description de l'image..." required>
-                            </div>
-                            <button type="submit" class="btn-primary">Ajouter</button>
                         </div>
-                    </form>
+                        <div class="input-group">
+                            <label for="altText">Texte alternatif (SEO)</label>
+                            <input type="text" id="altText" name="altText"
+                                   placeholder="Description de l'image..."
+                                   form="articleForm">
+                        </div>
+                    </div>
+                    <div id="image-preview-wrap" style="display:none; margin-top:16px;">
+                        <img id="image-preview" src="" alt="Aperçu"
+                             style="max-height:180px; border-radius:12px; border:1px solid #eee; object-fit:cover;">
+                        <button type="button" onclick="clearImagePreview()"
+                                style="display:block; margin-top:8px; background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px; font-weight:600;">✕ Annuler</button>
+                    </div>
 
                     <c:if test="${not empty images}">
                         <div class="images-grid">
