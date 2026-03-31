@@ -82,7 +82,7 @@
                             </c:choose>
                         </a>
                         <div class="article-meta">
-                            <img src="${pageContext.request.contextPath}/assets/images/avatar.jpg" class="author-img"
+                            <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
                                  alt="<c:out value='${hero.auteurNom}'/>">
                             <span class="meta-info">
                                 <strong><c:out value="${not empty hero.auteurNom ? hero.auteurNom : 'Rédaction'}"/></strong>
@@ -138,7 +138,7 @@
                                 <h4>Nos journalistes</h4>
                                 <c:set var="a1" value="${articles[0]}"/>
                                 <div class="author-row">
-                                    <img src="${pageContext.request.contextPath}/assets/images/avatar.jpg" class="author-img"
+                                    <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
                                          alt="<c:out value='${a1.auteurNom}'/>">
                                     <div class="author-info">
                                         <strong><c:out value="${not empty a1.auteurNom ? a1.auteurNom : 'Rédaction'}"/></strong>
@@ -149,7 +149,7 @@
                                 <c:set var="a2" value="${articles[1]}"/>
                                 <c:if test="${a2.auteurNom != a1.auteurNom}">
                                     <div class="author-row">
-                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.jpg" class="author-img"
+                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
                                              alt="<c:out value='${a2.auteurNom}'/>">
                                         <div class="author-info">
                                             <strong><c:out value="${not empty a2.auteurNom ? a2.auteurNom : 'Rédaction'}"/></strong>
@@ -188,7 +188,7 @@
                                     </h2>
                                     <p class="article-card-excerpt"><c:out value="${excerpts[article.id]}"/></p>
                                     <div class="article-meta">
-                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.jpg"
+                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.webp"
                                              class="author-img" alt="<c:out value='${article.auteurNom}'/>">
                                         <span class="meta-info">
                                             <strong><c:out value="${not empty article.auteurNom ? article.auteurNom : 'Rédaction'}"/></strong>

@@ -85,19 +85,19 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Images
 INSERT INTO images (url_path, alt_text, article_id)
-SELECT '/assets/images/operation-militaire.jpg',  'Opérations militaires en Iran',                    id FROM articles WHERE slug = 'bilan-48h-point-complet-conflit'
+SELECT '/assets/images/operation-militaire.webp',  'Opérations militaires en Iran',                    id FROM articles WHERE slug = 'bilan-48h-point-complet-conflit'
 UNION ALL
-SELECT '/assets/images/marche-financiere.jpg',    'Marché financier et économie iranienne',            id FROM articles WHERE slug = 'economie-iranienne-impact-sanctions'
+SELECT '/assets/images/marche-financiere.webp',    'Marché financier et économie iranienne',            id FROM articles WHERE slug = 'economie-iranienne-impact-sanctions'
 UNION ALL
-SELECT '/assets/images/diplomatie.jpg',           'Négociations diplomatiques à Vienne',               id FROM articles WHERE slug = 'diplomatie-negociations-nucleaire-iranien'
+SELECT '/assets/images/diplomatie.webp',           'Négociations diplomatiques à Vienne',               id FROM articles WHERE slug = 'diplomatie-negociations-nucleaire-iranien'
 UNION ALL
-SELECT '/assets/images/geopolitique.jpg',         'Carte géopolitique du Moyen-Orient',                id FROM articles WHERE slug = 'geopolitique-alliances-regionales-conflit-iranien'
+SELECT '/assets/images/geopolitique.webp',         'Carte géopolitique du Moyen-Orient',                id FROM articles WHERE slug = 'geopolitique-alliances-regionales-conflit-iranien'
 UNION ALL
-SELECT '/assets/images/humanitaire.jpg',          'Déplacés et aide humanitaire en Iran',              id FROM articles WHERE slug = 'crise-humanitaire-deplaces-internes-iran'
+SELECT '/assets/images/humanitaire.webp',          'Déplacés et aide humanitaire en Iran',              id FROM articles WHERE slug = 'crise-humanitaire-deplaces-internes-iran'
 UNION ALL
-SELECT '/assets/images/absolutvision-WYd_PkCa1BY-unsplash.jpg', 'Analyse stratégique du conflit',     id FROM articles WHERE slug = 'analyse-conflit-iranien-remodele-moyen-orient'
+SELECT '/assets/images/absolutvision-WYd_PkCa1BY-unsplash.webp', 'Analyse stratégique du conflit',     id FROM articles WHERE slug = 'analyse-conflit-iranien-remodele-moyen-orient'
 UNION ALL
-SELECT '/assets/images/operation-militaire.jpg',  'Offensives militaires dans le nord-ouest iranien',  id FROM articles WHERE slug = 'offensives-militaires-nord-ouest-bilan-strategique'
+SELECT '/assets/images/operation-militaire.webp',  'Offensives militaires dans le nord-ouest iranien',  id FROM articles WHERE slug = 'offensives-militaires-nord-ouest-bilan-strategique'
 UNION ALL
-SELECT '/assets/images/geopolitique.jpg',         'Tensions géopolitiques et origines du conflit',     id FROM articles WHERE slug = 'guerre-iran-analyse-tensions-geopolitiques-origines'
+SELECT '/assets/images/geopolitique.webp',         'Tensions géopolitiques et origines du conflit',     id FROM articles WHERE slug = 'guerre-iran-analyse-tensions-geopolitiques-origines'
 ;
