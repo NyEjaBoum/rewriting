@@ -16,8 +16,7 @@
         <c:set var="ogImg" value="${images[0].urlPath}"/>
         <meta property="og:image" content="${fn:startsWith(ogImg,'http') ? ogImg : pageContext.request.contextPath.concat(ogImg)}">
     </c:if>
-    <link rel="preload" href="${pageContext.request.contextPath}/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></noscript>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">

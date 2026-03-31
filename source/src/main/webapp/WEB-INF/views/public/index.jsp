@@ -12,8 +12,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Iran Pulse | Actualités">
     <meta property="og:description" content="Iran Pulse — Suivez en temps réel le conflit en Iran : analyses géopolitiques, diplomatie, économie de guerre et situation humanitaire.">
-    <link rel="preload" href="${pageContext.request.contextPath}/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></noscript>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -72,6 +71,7 @@
                                     <div class="hero-image">
                                         <img src="${fn:startsWith(heroSrc,'http') ? heroSrc : pageContext.request.contextPath.concat(heroSrc)}"
                                              alt="<c:out value='${hero.images[0].altText}'/>"
+                                             width="600" height="400"
                                              fetchpriority="high">
                                     </div>
                                 </c:when>
@@ -84,6 +84,7 @@
                         </a>
                         <div class="article-meta">
                             <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                 width="56" height="56"
                                  alt="<c:out value='${hero.auteurNom}'/>">
                             <span class="meta-info">
                                 <strong><c:out value="${not empty hero.auteurNom ? hero.auteurNom : 'Rédaction'}"/></strong>
@@ -112,7 +113,8 @@
                                     <c:when test="${not empty aSrc}">
                                         <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
                                             <img src="${fn:startsWith(aSrc,'http') ? aSrc : pageContext.request.contextPath.concat(aSrc)}"
-                                                 alt="<c:out value='${article.images[0].altText}'/>" loading="lazy">
+                                                 alt="<c:out value='${article.images[0].altText}'/>"
+                                                 width="190" height="127" loading="lazy">
                                         </a>
                                     </c:when>
                                     <c:otherwise>
@@ -140,6 +142,7 @@
                                 <c:set var="a1" value="${articles[0]}"/>
                                 <div class="author-row">
                                     <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                         width="56" height="56"
                                          alt="<c:out value='${a1.auteurNom}'/>">
                                     <div class="author-info">
                                         <strong><c:out value="${not empty a1.auteurNom ? a1.auteurNom : 'Rédaction'}"/></strong>
@@ -151,6 +154,7 @@
                                 <c:if test="${a2.auteurNom != a1.auteurNom}">
                                     <div class="author-row">
                                         <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                             width="56" height="56"
                                              alt="<c:out value='${a2.auteurNom}'/>">
                                         <div class="author-info">
                                             <strong><c:out value="${not empty a2.auteurNom ? a2.auteurNom : 'Rédaction'}"/></strong>
@@ -174,7 +178,8 @@
                                     <c:when test="${not empty imgSrc}">
                                         <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
                                              alt="<c:out value='${article.images[0].altText}'/>"
-                                             class="article-card-image" loading="lazy">
+                                             class="article-card-image"
+                                             width="490" height="326" loading="lazy">
                                     </c:when>
                                     <c:otherwise>
                                         <div class="article-card-placeholder">${fn:substring(article.titre, 0, 1)}</div>
@@ -190,7 +195,8 @@
                                     <p class="article-card-excerpt"><c:out value="${excerpts[article.id]}"/></p>
                                     <div class="article-meta">
                                         <img src="${pageContext.request.contextPath}/assets/images/avatar.webp"
-                                             class="author-img" alt="<c:out value='${article.auteurNom}'/>">
+                                             class="author-img" width="56" height="56"
+                                             alt="<c:out value='${article.auteurNom}'/>">
                                         <span class="meta-info">
                                             <strong><c:out value="${not empty article.auteurNom ? article.auteurNom : 'Rédaction'}"/></strong>
                                             &bull; <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy"/>
