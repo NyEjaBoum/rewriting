@@ -155,9 +155,13 @@
                     <%-- Création : champs image directement dans le formulaire principal --%>
                     <div class="upload-row" id="upload-row-create">
                         <div class="input-group">
-                            <label for="imageFile">Fichier image <span style="color:#aaa;font-weight:400;">(optionnel)</span></label>
-                            <input type="file" id="imageFile" name="imageFile" accept="image/*"
-                                   onchange="previewImage(this); syncAltPlaceholder(this)">
+                            <label>Fichier image <span style="color:#aaa;font-weight:400;">(optionnel)</span></label>
+                            <div class="file-upload-wrapper">
+                                <label for="imageFile" class="custom-file-upload">Choisir une image</label>
+                                <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                       onchange="previewImage(this); syncAltPlaceholder(this); updateFileName(this, 'file-name-create')">
+                                <span id="file-name-create" class="file-name">Aucun fichier choisi</span>
+                            </div>
                         </div>
                         <div class="input-group">
                             <label for="altText">Texte alternatif (SEO)</label>
@@ -178,8 +182,13 @@
                           method="post" enctype="multipart/form-data" onsubmit="return validateImageForm()">
                         <div class="upload-row">
                             <div class="input-group">
-                                <label for="imageFile">Fichier image</label>
-                                <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
+                                <label>Fichier image</label>
+                                <div class="file-upload-wrapper">
+                                    <label for="imageFile" class="custom-file-upload">Choisir une image</label>
+                                    <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                           required onchange="updateFileName(this, 'file-name-edit')">
+                                    <span id="file-name-edit" class="file-name">Aucun fichier choisi</span>
+                                </div>
                             </div>
                             <div class="input-group">
                                 <label for="altText">Texte alternatif (SEO)</label>
@@ -215,19 +224,19 @@
         <div id="preview-overlay" style="display:none;">
             <div id="preview-box">
                 <button onclick="closePreview()" id="preview-close">✕ Fermer</button>
+                <h1 id="preview-titre"></h1>
                 <c:choose>
                     <c:when test="${not empty images}">
                         <img id="preview-cover-img"
                              data-src="${pageContext.request.contextPath}${images[0].urlPath}"
                              src="" alt=""
-                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin-bottom:28px;">
+                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin: 20px 0 28px;">
                     </c:when>
                     <c:otherwise>
                         <img id="preview-cover-img" src="" alt=""
-                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin-bottom:28px;">
+                             style="display:none; width:100%; max-height:340px; object-fit:cover; border-radius:12px; margin: 20px 0 28px;">
                     </c:otherwise>
                 </c:choose>
-                <h1 id="preview-titre"></h1>
                 <div id="preview-content"></div>
             </div>
         </div>
@@ -282,6 +291,11 @@
         document.getElementById('imageFile').value = '';
         document.getElementById('image-preview-wrap').style.display = 'none';
         document.getElementById('image-preview').src = '';
+    }
+
+    function updateFileName(input, spanId) {
+        var span = document.getElementById(spanId);
+        if (span) span.textContent = input.files[0] ? input.files[0].name : 'Aucun fichier choisi';
     }
 
     function syncAltPlaceholder(input) {

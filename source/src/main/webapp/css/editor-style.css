@@ -128,3 +128,40 @@ body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; color: #1a1a
 #preview-content h2,
 #preview-content h3 { margin: 24px 0 12px; font-weight: 700; }
 #preview-content p   { margin-bottom: 16px; }
+
+/* Custom file upload */
+input[type="file"] { display: none; }
+
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.custom-file-upload {
+    background: #f3f4f6;
+    color: #1a1a1a;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #e5e7eb;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.custom-file-upload:hover { background: #e5e7eb; border-color: #d1d5db; }
+
+.file-name {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
