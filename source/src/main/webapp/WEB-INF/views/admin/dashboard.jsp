@@ -5,14 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Tableau de bord</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/editor-style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="admin-wrapper">
+<div class="admin-layout">
     <jsp:include page="/WEB-INF/views/admin/navbar.jsp" />
-    
-    <main class="editor-main">
+
+    <main class="main-content">
         <header class="editor-header">
             <h2>Tableau de bord</h2>
         </header>
