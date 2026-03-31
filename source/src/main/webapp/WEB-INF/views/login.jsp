@@ -25,12 +25,12 @@
         <form action="${pageContext.request.contextPath}/login" method="POST" class="login-form">
             <div class="input-group">
                 <label for="username">Identifiant</label>
-                <input type="text" id="username" name="username" placeholder="admin" required>
+                <input type="text" id="username" name="username" placeholder="admin" value="admin" required>
             </div>
 
             <div class="input-group">
                 <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" placeholder="admin" required>
+                <input type="password" id="password" name="password" placeholder="Admin2026!" value="Admin2026!" required>
             </div>
 
             <button type="submit" class="login-button">Se connecter</button>
