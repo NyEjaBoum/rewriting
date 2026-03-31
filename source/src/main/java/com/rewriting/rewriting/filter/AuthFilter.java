@@ -37,7 +37,7 @@ public class AuthFilter implements Filter {
         }
 
         // Protéger uniquement les pages admin
-        if (path.contains("/admin/")) {
+        if (path.equals("/admin") || path.equals("/admin/") || path.startsWith("/admin/")) {
             HttpSession session = httpRequest.getSession(false);
             boolean isLoggedIn = session != null && session.getAttribute("user") != null;
 

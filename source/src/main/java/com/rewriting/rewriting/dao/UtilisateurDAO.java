@@ -20,6 +20,7 @@ public class UtilisateurDAO {
                 utilisateur.setId(rs.getLong("id"));
                 utilisateur.setUsername(rs.getString("username"));
                 utilisateur.setPassword(rs.getString("password"));
+                utilisateur.setNomComplet(rs.getString("nom_complet"));
                 utilisateurs.add(utilisateur);
             }
         }
@@ -39,6 +40,7 @@ public class UtilisateurDAO {
                     utilisateur.setId(rs.getLong("id"));
                     utilisateur.setUsername(rs.getString("username"));
                     utilisateur.setPassword(rs.getString("password"));
+                    utilisateur.setNomComplet(rs.getString("nom_complet"));
                     return utilisateur;
                 }
             }
@@ -59,6 +61,7 @@ public class UtilisateurDAO {
                     utilisateur.setId(rs.getLong("id"));
                     utilisateur.setUsername(rs.getString("username"));
                     utilisateur.setPassword(rs.getString("password"));
+                    utilisateur.setNomComplet(rs.getString("nom_complet"));
                     return utilisateur;
                 }
             }

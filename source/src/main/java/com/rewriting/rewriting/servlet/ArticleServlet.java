@@ -128,6 +128,13 @@ public class ArticleServlet extends HttpServlet {
         article.setContenuHtml(contenuHtml);
         article.setStatut(statut != null ? statut : "BROUILLON");
 
+        // Auteur depuis la session
+        com.rewriting.rewriting.model.Utilisateur sessionUser =
+            (com.rewriting.rewriting.model.Utilisateur) request.getSession().getAttribute("user");
+        if (sessionUser != null && sessionUser.getNomComplet() != null) {
+            article.setAuteurNom(sessionUser.getNomComplet());
+        }
+
         if (datePubStr != null && !datePubStr.isEmpty()) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -140,7 +147,21 @@ public class ArticleServlet extends HttpServlet {
         }
 
         articleDAO.save(article);
-        response.sendRedirect(request.getContextPath() + "/admin/articles?success=Article créé avec succès !");
+
+        // Upload image optionnel à la création
+        try {
+            Part filePart = request.getPart("imageFile");
+            String altText = request.getParameter("altText");
+            if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
+                String alt = (altText != null && !altText.trim().isEmpty()) ? altText.trim() : article.getTitre();
+                saveImageForArticle(article, filePart, alt, request);
+            }
+        } catch (Exception e) {
+            // L'image a échoué mais l'article est créé — on continue
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/articles/edit/" + article.getId() + "?success=Article créé avec succès !");
     }
 
     private void showEditForm(Long id, HttpServletRequest request, HttpServletResponse response)
@@ -154,6 +175,8 @@ public class ArticleServlet extends HttpServlet {
         request.setAttribute("images", imageDAO.findByArticleId(id));
         request.setAttribute("formTitle", "Éditer l'article");
         request.setAttribute("actionUrl", request.getContextPath() + "/admin/articles/edit/" + id);
+        String success = request.getParameter("success");
+        if (success != null) request.setAttribute("success", success);
         request.getRequestDispatcher("/WEB-INF/views/admin/article/form.jsp").forward(request, response);
     }
 
@@ -173,7 +196,19 @@ public class ArticleServlet extends HttpServlet {
         article.setStatut(statut != null ? statut : "BROUILLON");
 
         articleDAO.save(article);
-        response.sendRedirect(request.getContextPath() + "/admin/articles?success=Article modifié !");
+
+        try {
+            Part filePart = request.getPart("imageFile");
+            String altText = request.getParameter("altText");
+            if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
+                String alt = (altText != null && !altText.trim().isEmpty()) ? altText.trim() : article.getTitre();
+                saveImageForArticle(article, filePart, alt, request);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/articles/edit/" + id + "?success=Article modifié !");
     }
 
     private void deleteArticle(Long id, HttpServletRequest request, HttpServletResponse response)
@@ -185,6 +220,30 @@ public class ArticleServlet extends HttpServlet {
     private Long extractId(String pathInfo) {
         String[] parts = pathInfo.split("/");
         return Long.parseLong(parts[parts.length - 1]);
+    }
+
+    private void saveImageForArticle(Article article, Part filePart, String altText, HttpServletRequest request)
+            throws IOException, SQLException {
+        String originalFilename = filePart.getSubmittedFileName();
+        FileUploadValidator.validateFile(filePart, originalFilename);
+
+        String uniqueFilename = System.currentTimeMillis() + "_"
+                + UUID.randomUUID().toString().substring(0, 8) + "_"
+                + FileUploadValidator.sanitizeFilename(originalFilename);
+
+        String uploadDirPath = getServletContext().getRealPath("/uploads");
+        new File(uploadDirPath).mkdirs();
+
+        Path savedPath = Paths.get(uploadDirPath, uniqueFilename);
+        try (InputStream input = filePart.getInputStream()) {
+            Files.copy(input, savedPath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        Image image = new Image();
+        image.setUrlPath("/uploads/" + uniqueFilename);
+        image.setAltText(altText);
+        image.setArticle(article);
+        imageDAO.save(image);
     }
 
     private boolean isAuthenticated(HttpServletRequest request) {

@@ -5,72 +5,96 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des articles</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/editor-style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des articles | Iran Pulse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-style.css">
 </head>
 <body>
-<div class="admin-wrapper">
+<div class="admin-layout">
     <jsp:include page="/WEB-INF/views/admin/navbar.jsp" />
-    
-    <main class="editor-main">
-        <header class="editor-header">
-            <h2>Tous les articles</h2>
-            <div class="header-actions">
-                <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">+ Nouvel Article</a>
+
+    <main class="main-content">
+        <header class="page-header">
+            <div class="header-text">
+                <h1>Gestion des articles</h1>
+                <p>Liste complète des contenus du site d'information sur l'Iran.</p>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <a href="${pageContext.request.contextPath}/" class="btn-secondary" target="_blank">↗ Voir le site</a>
+                <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">+ Ajouter un article</a>
             </div>
         </header>
 
-        <section class="articles-container">
-            <c:if test="${not empty success}">
-                <div class="message success">${success}</div>
-            </c:if>
-            <c:if test="${not empty error}">
-                <div class="message error">${error}</div>
-            </c:if>
+        <c:if test="${not empty success}">
+            <div class="message success">${success}</div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="message error">${error}</div>
+        </c:if>
 
-            <c:choose>
-                <c:when test="${empty articles}">
-                    <div class="no-articles">
-                        <p>Aucun article trouvé.</p>
-                        <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">Créer le premier article</a>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <table class="articles-table">
+        <c:choose>
+            <c:when test="${empty articles}">
+                <div class="no-articles">
+                    <p>Aucun article trouvé.</p>
+                    <a href="${pageContext.request.contextPath}/admin/articles/add" class="btn-primary">Créer le premier article</a>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="table-card">
+                    <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Titre</th>
-                                <th>Slug</th>
-                                <th>Date de pub</th>
+                                <th>Titre &amp; Slug</th>
+                                <th>Date de publication</th>
                                 <th>Statut</th>
-                                <th>Actions</th>
+                                <th class="actions-head" style="text-align:right;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="article" items="${articles}">
                                 <tr>
-                                    <td>${article.id}</td>
-                                    <td>${article.titre}</td>
-                                    <td><code>${article.slug}</code></td>
+                                    <td class="id-cell">#${article.id}</td>
                                     <td>
-                                        <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy" />
+                                        <div class="title-stack">
+                                            <strong><c:out value="${article.titre}"/></strong>
+                                            <span class="slug"><c:out value="${article.slug}"/></span>
+                                        </div>
                                     </td>
                                     <td>
-                                        <span class="statut-badge statut-${article.statut}">${article.statut}</span>
+                                        <fmt:formatDate value="${article.datePub}" pattern="dd MMM yyyy" />
                                     </td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/admin/articles/edit/${article.id}" class="btn-edit">Éditer</a>
-                                        <a href="${pageContext.request.contextPath}/admin/articles/delete/${article.id}" class="btn-delete" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</a>
+                                        <c:choose>
+                                            <c:when test="${article.statut == 'PUBLIE'}">
+                                                <span class="status-pill published">Publié</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="status-pill draft">Brouillon</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td class="actions-cell">
+                                        <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html"
+                                           class="btn-icon" title="Voir sur le site" target="_blank">👁</a>
+                                        <a href="${pageContext.request.contextPath}/admin/articles/edit/${article.id}"
+                                           class="btn-icon" title="Modifier">✎</a>
+                                        <a href="${pageContext.request.contextPath}/admin/articles/delete/${article.id}"
+                                           class="btn-icon btn-danger" title="Supprimer"
+                                           onclick="return confirm('Supprimer cet article définitivement ?')">🗑</a>
                                     </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
-                </c:otherwise>
-            </c:choose>
-        </section>
+                </div>
+            </c:otherwise>
+        </c:choose>
     </main>
 </div>
 </body>

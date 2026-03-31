@@ -10,6 +10,7 @@ public class Article {
     private String metaDescription;
     private Date datePub;
     private String statut; // BROUILLON ou PUBLIE
+    private String auteurNom;
 
     // Relation avec les images
     private java.util.List<com.rewriting.rewriting.model.Image> images;
@@ -35,6 +36,9 @@ public class Article {
 
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
+
+    public String getAuteurNom() { return auteurNom; }
+    public void setAuteurNom(String auteurNom) { this.auteurNom = auteurNom; }
 
     public java.util.List<com.rewriting.rewriting.model.Image> getImages() { return images; }
     public void setImages(java.util.List<com.rewriting.rewriting.model.Image> images) { this.images = images; }

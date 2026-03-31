@@ -57,59 +57,156 @@
     <main class="main-wrapper">
         <c:choose>
             <c:when test="${not empty articles}">
-                <%-- Grille d'articles --%>
-                <div class="articles-grid">
-                    <c:forEach var="article" items="${articles}" varStatus="loop">
-                        <article class="article-card">
-                            <%-- Image principale ou placeholder --%>
+
+                <%-- Layout principal : hero à gauche, sidebar à droite --%>
+                <div class="content-grid">
+
+                    <%-- Article héro (le plus récent) --%>
+                    <c:set var="hero" value="${articles[0]}"/>
+                    <section class="main-article">
+                        <a href="${pageContext.request.contextPath}/${hero.slug}-${hero.id}-${hero.datePub}.html">
                             <c:choose>
-                                <c:when test="${not empty article.images}">
-                                    <c:set var="imgSrc" value="${article.images[0].urlPath}"/>
-                                    <c:choose>
-                                        <c:when test="${loop.first}">
-                                            <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
-                                                 alt="<c:out value='${article.images[0].altText}'/>"
-                                                 class="article-card-image" fetchpriority="high">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
-                                                 alt="<c:out value='${article.images[0].altText}'/>"
-                                                 class="article-card-image" loading="lazy">
-                                        </c:otherwise>
-                                    </c:choose>
+                                <c:when test="${not empty hero.images}">
+                                    <c:set var="heroSrc" value="${hero.images[0].urlPath}"/>
+                                    <div class="hero-image">
+                                        <img src="${fn:startsWith(heroSrc,'http') ? heroSrc : pageContext.request.contextPath.concat(heroSrc)}"
+                                             alt="<c:out value='${hero.images[0].altText}'/>"
+                                             width="600" height="400"
+                                             fetchpriority="high">
+                                    </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="article-card-placeholder">
-                                        ${fn:substring(article.titre, 0, 1)}
+                                    <div class="hero-image-placeholder">
+                                        ${fn:substring(hero.titre, 0, 1)}
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                        </a>
+                        <div class="article-meta">
+                            <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                 width="56" height="56"
+                                 alt="<c:out value='${hero.auteurNom}'/>">
+                            <span class="meta-info">
+                                <strong><c:out value="${not empty hero.auteurNom ? hero.auteurNom : 'Rédaction'}"/></strong>
+                                &bull; <fmt:formatDate value="${hero.datePub}" pattern="dd MMM yyyy"/>
+                            </span>
+                        </div>
+                        <h2 class="main-title">
+                            <a href="${pageContext.request.contextPath}/${hero.slug}-${hero.id}-${hero.datePub}.html">
+                                <c:out value="${hero.titre}"/>
+                            </a>
+                        </h2>
+                        <p class="summary">
+                            <c:out value="${excerpts[hero.id]}"/>
+                            <a href="${pageContext.request.contextPath}/${hero.slug}-${hero.id}-${hero.datePub}.html"
+                               class="read-more"> lire la suite</a>
+                        </p>
+                    </section>
 
-                            <%-- Contenu de la carte --%>
-                            <div class="article-card-content">
-                                <span class="category-badge">Actualités</span>
-
-                                <h2 class="article-card-title">
-                                    <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
-                                        <c:out value="${article.titre}"/>
-                                    </a>
-                                </h2>
-
-                                <p class="article-card-excerpt">
-                                    <c:out value="${excerpts[article.id]}"/>
-                                </p>
-
-                                <div class="article-meta">
-                                    <img src="https://i.pravatar.cc/100?u=redaction" class="author-img" alt="Rédaction">
-                                    <span class="meta-info">
-                                        <strong>Rédaction</strong> &bull;
-                                        <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy"/>
-                                    </span>
+                    <%-- Sidebar : articles 2 à 4 + auteurs --%>
+                    <aside class="sidebar">
+                        <c:forEach var="article" items="${articles}" varStatus="loop"
+                                   begin="1" end="4">
+                            <c:set var="aSrc" value="${not empty article.images ? article.images[0].urlPath : ''}"/>
+                            <div class="side-item">
+                                <c:choose>
+                                    <c:when test="${not empty aSrc}">
+                                        <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
+                                            <img src="${fn:startsWith(aSrc,'http') ? aSrc : pageContext.request.contextPath.concat(aSrc)}"
+                                                 alt="<c:out value='${article.images[0].altText}'/>"
+                                                 width="190" height="127" loading="lazy">
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="side-item-placeholder"></div>
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="side-text">
+                                    <h3>
+                                        <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
+                                            <c:out value="${article.titre}"/>
+                                        </a>
+                                    </h3>
+                                    <div class="meta">
+                                        <c:out value="${not empty article.auteurNom ? article.auteurNom : 'Rédaction'}"/>
+                                        &bull; <fmt:formatDate value="${article.datePub}" pattern="dd MMM yyyy"/>
+                                    </div>
                                 </div>
                             </div>
-                        </article>
-                    </c:forEach>
+                        </c:forEach>
+
+                        <%-- Auteurs tendance --%>
+                        <c:if test="${fn:length(articles) >= 2}">
+                            <div class="trending">
+                                <h4>Nos journalistes</h4>
+                                <c:set var="a1" value="${articles[0]}"/>
+                                <div class="author-row">
+                                    <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                         width="56" height="56"
+                                         alt="<c:out value='${a1.auteurNom}'/>">
+                                    <div class="author-info">
+                                        <strong><c:out value="${not empty a1.auteurNom ? a1.auteurNom : 'Rédaction'}"/></strong>
+                                        <span>Journaliste</span>
+                                    </div>
+                                    <span class="arrow">↗</span>
+                                </div>
+                                <c:set var="a2" value="${articles[1]}"/>
+                                <c:if test="${a2.auteurNom != a1.auteurNom}">
+                                    <div class="author-row">
+                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.webp" class="author-img"
+                                             width="56" height="56"
+                                             alt="<c:out value='${a2.auteurNom}'/>">
+                                        <div class="author-info">
+                                            <strong><c:out value="${not empty a2.auteurNom ? a2.auteurNom : 'Rédaction'}"/></strong>
+                                            <span>Journaliste</span>
+                                        </div>
+                                        <span class="arrow">↗</span>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </c:if>
+                    </aside>
                 </div>
+
+                <%-- Articles suivants en grille (5+) --%>
+                <c:if test="${fn:length(articles) > 4}">
+                    <div class="articles-grid" style="margin-top: 60px;">
+                        <c:forEach var="article" items="${articles}" varStatus="loop" begin="4">
+                            <c:set var="imgSrc" value="${not empty article.images ? article.images[0].urlPath : ''}"/>
+                            <article class="article-card">
+                                <c:choose>
+                                    <c:when test="${not empty imgSrc}">
+                                        <img src="${fn:startsWith(imgSrc,'http') ? imgSrc : pageContext.request.contextPath.concat(imgSrc)}"
+                                             alt="<c:out value='${article.images[0].altText}'/>"
+                                             class="article-card-image"
+                                             width="490" height="326" loading="lazy">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="article-card-placeholder">${fn:substring(article.titre, 0, 1)}</div>
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="article-card-content">
+                                    <span class="category-badge">Actualités</span>
+                                    <h2 class="article-card-title">
+                                        <a href="${pageContext.request.contextPath}/${article.slug}-${article.id}-${article.datePub}.html">
+                                            <c:out value="${article.titre}"/>
+                                        </a>
+                                    </h2>
+                                    <p class="article-card-excerpt"><c:out value="${excerpts[article.id]}"/></p>
+                                    <div class="article-meta">
+                                        <img src="${pageContext.request.contextPath}/assets/images/avatar.webp"
+                                             class="author-img" width="56" height="56"
+                                             alt="<c:out value='${article.auteurNom}'/>">
+                                        <span class="meta-info">
+                                            <strong><c:out value="${not empty article.auteurNom ? article.auteurNom : 'Rédaction'}"/></strong>
+                                            &bull; <fmt:formatDate value="${article.datePub}" pattern="dd/MM/yyyy"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </article>
+                        </c:forEach>
+                    </div>
+                </c:if>
 
                 <%-- Pagination --%>
                 <c:if test="${totalPages > 1}">
@@ -117,19 +214,15 @@
                         <c:if test="${currentPage > 1}">
                             <a href="?page=${currentPage - 1}" class="page-btn">← Précédent</a>
                         </c:if>
-
                         <c:forEach begin="1" end="${totalPages}" var="p">
-                            <a href="?page=${p}"
-                               class="page-num ${p == currentPage ? 'active' : ''}">
-                                ${p}
-                            </a>
+                            <a href="?page=${p}" class="page-num ${p == currentPage ? 'active' : ''}">${p}</a>
                         </c:forEach>
-
                         <c:if test="${currentPage < totalPages}">
                             <a href="?page=${currentPage + 1}" class="page-btn">Suivant →</a>
                         </c:if>
                     </nav>
                 </c:if>
+
             </c:when>
             <c:otherwise>
                 <div class="no-articles">

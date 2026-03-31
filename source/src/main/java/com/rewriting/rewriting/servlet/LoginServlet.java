@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
             if (utilisateur != null && utilisateur.getPassword().equals(password)) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", utilisateur);
-                response.sendRedirect(request.getContextPath() + "/admin/articles");
+                response.sendRedirect(request.getContextPath() + "/admin");
             } else {
                 request.setAttribute("error", "Identifiants invalides");
                 request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
