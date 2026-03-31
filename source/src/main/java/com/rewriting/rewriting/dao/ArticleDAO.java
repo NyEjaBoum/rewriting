@@ -85,6 +85,20 @@ public class ArticleDAO {
         return articles;
     }
 
+    public int countAll() throws SQLException {
+        String query = "SELECT COUNT(*) FROM articles";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
     public int countPublished() throws SQLException {
         String query = "SELECT COUNT(*) FROM articles WHERE statut = 'PUBLIE'";
 
