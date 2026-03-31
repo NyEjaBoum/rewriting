@@ -347,10 +347,11 @@
         selector: '#rich-editor',
         height: 420,
         menubar: false,
-        toolbar: 'bold italic underline | h2 h3 | bullist numlist | link | undo redo',
+        toolbar: 'bold italic underline | blocks | bullist numlist | link | undo redo',
         plugins: 'link lists',
+        block_formats: 'Paragraphe=p; Titre 2=h2; Titre 3=h3; Titre 4=h4; Titre 5=h5; Titre 6=h6',
         forced_root_blocks: 'p',
-        valid_elements: 'h1,h2,h3,p,strong,em,u,ul,ol,li,br,a[href],span[style]',
+        valid_elements: 'h1,h2,h3,h4,h5,h6,p,strong,em,u,ul,ol,li,br,a[href],span[style]',
         content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; line-height: 1.7; }',
         branding: false,
         setup: function(editor) {
